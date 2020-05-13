@@ -2,26 +2,51 @@
   <div class="card-modal" :class="{ active: isActive }">
     <div class="modal-content">
       <span class="close-button" @click="toggleModal">&times;</span>
-      <h1>{{ card.title }}</h1>
-      <p>Assigned to: {{ card.assignee }}</p>
-      <p>Created by: {{ card.owner }}</p>
-      <p>{{ card.description }}</p>
+      <label for="card-title">Title</label>
+      <input
+        type="text"
+        name="card-title"
+        id="card-title"
+        v-model="card.title"
+      />
+      <label for="card-description">Description</label>
+      <input
+        type="text"
+        name="cardDescription"
+        id="card-description"
+        v-model="card.description"
+      />
+      <label for="assigneName">Assigned to</label>
+      <input
+        type="text"
+        name="assigneName"
+        id="assignee-name"
+        v-model="card.assignee.name"
+      />
+      <label for="ownerName">Owner:</label>
+      <input
+        type="text"
+        name="ownerName"
+        id="owner-name"
+        v-model="card.owner.name"
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 import { card } from "../board";
+import { Mutation, State } from "vuex-class";
 
 @Component
 export default class CardModal extends Vue {
-  @Prop() card!: card;
-  @Prop() isActive: boolean;
-  // https://sabe.io/tutorials/how-to-create-modal-popup-box
+  @State("selectedCard") card!: card;
+  @State("modalIsActive") isActive: boolean;
+  @Mutation setModalIsActive;
   toggleModal() {
-    this.isActive = !this.isActive;
+    this.setModalIsActive(!this.isActive);
   }
 }
 </script>
@@ -45,23 +70,39 @@ export default class CardModal extends Vue {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: white;
-  padding: 1rem 1.5rem;
+  background-color: #162447;
+  padding: 5rem 10rem;
   width: 24rem;
   border-radius: 0.5em;
+  display: flex;
+  flex-direction: column;
 }
 
 .close-button {
+  top: 5%;
+  left: 90%;
+  position: absolute;
   float: right;
-  width: 1.5rem;
-  line-height: 1.5rem;
+  width: 2rem;
+  line-height: 2rem;
   text-align: center;
+  font-size: x-large;
   cursor: pointer;
   border-radius: 0.25rem;
-  background-color: lightgray;
 }
-.close-button {
+.close-button:hover {
   background-color: darkgray;
+}
+
+input[type="text"] {
+  padding: 0.5rem;
+  border: 0;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.5);
+  margin: 1rem;
+}
+
+label {
+  font-size: x-large;
 }
 
 .active {

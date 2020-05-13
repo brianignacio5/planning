@@ -2,6 +2,7 @@
   <div id="app">
     <div class="flexbox">
       <Board v-for="board in boards" :board="board" :key="board.id" />
+      <CardModal />
     </div>
   </div>
 </template>
@@ -9,73 +10,31 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import Board from "./components/Board.vue";
+import CardModal from "./components/CardModal.vue";
 import { board } from "./board";
-
-const myBoards: board[] = [
-  {
-    id: "first",
-    name: "first",
-    cards: [
-      {
-        id: "card1",
-        title: "card1",
-        description: "This awesome card",
-        assignee: { id: "user1", name: "Me" },
-        comments: [
-          {
-            id: "comment1",
-            content: "Awesome task",
-            createdOn: new Date(),
-            createdBy: { id: "user1", name: "Me" }
-          }
-        ],
-        owner: { id: "user3", name: "boss" }
-      }
-    ]
-  },
-  {
-    id: "second",
-    name: "second",
-    cards: [
-      {
-        id: "card2",
-        title: "card2",
-        description: "This crappy card",
-        assignee: { id: "user2", name: "He" },
-        comments: [
-          {
-            id: "comment1",
-            content: "Awesome task",
-            createdOn: new Date(),
-            createdBy: { id: "user3", name: "boss" }
-          }
-        ],
-        owner: { id: "user3", name: "boss" }
-      }
-    ]
-  }
-];
+import { State } from "vuex-class";
 
 @Component({
   components: {
-    Board
+    Board,
+    CardModal
   }
 })
 export default class App extends Vue {
-  private boards: board[] = myBoards;
+  @State boards: board[];
 }
 </script>
 
 <style>
 body {
-  background-color: #4d3e3e;
+  background-color: #3f3f44;
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: #f7f7f7;
   margin-top: 60px;
 }
 

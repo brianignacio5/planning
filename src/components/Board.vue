@@ -10,7 +10,7 @@
     <h2 @dragover.stop>{{ board.name }}</h2>
     <Card
       v-for="card in board.cards"
-      :card="card"
+      :card.sync="card"
       :key="card.id"
       :class="{ dragHover: isDragEntered }"
     />
@@ -19,6 +19,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import { Mutation } from "vuex-class";
 import { board } from "../board";
 import Card from "./Card.vue";
 
@@ -29,13 +30,35 @@ import Card from "./Card.vue";
 })
 export default class Board extends Vue {
   @Prop() private board!: board;
+  @Mutation updateBoardWithCardIndex;
   private isDragEntered = false;
 
   public drop(e) {
     const cardId = e.dataTransfer.getData("card_id");
-    const card = document.getElementById(cardId);
-    card.style.display = "block";
-    e.target.appendChild(card);
+    const dropYPosition = e.pageY;
+    let isBoardUpdated = false;
+    for (let i = 0; i < this.board.cards.length; i++) {
+      const cardYPosition = document.getElementById(this.board.cards[i].id);
+      if (
+        cardYPosition &&
+        cardYPosition.getBoundingClientRect().y > dropYPosition
+      ) {
+        this.updateBoardWithCardIndex({
+          cardId,
+          destBoardId: this.board.id,
+          destIndex: i
+        });
+        isBoardUpdated = true;
+        break;
+      }
+    }
+    if (!isBoardUpdated) {
+      this.updateBoardWithCardIndex({
+        cardId,
+        destBoardId: this.board.id,
+        destIndex: this.board.cards.length
+      });
+    }
   }
 
   public onDragEnter() {
@@ -50,7 +73,8 @@ export default class Board extends Vue {
 
 <style scoped>
 .board {
-  background-color: #ffc38b;
+  background-color: #162447;
+  color: #f7f7f7;
   width: 25vh;
   margin: 1%;
   padding-bottom: 2%;
@@ -60,6 +84,6 @@ export default class Board extends Vue {
   margin-bottom: 4%;
 }
 h2 {
-  margin-top: 0;
+  margin-top: 1%;
 }
 </style>
