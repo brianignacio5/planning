@@ -5,12 +5,19 @@
     @dragstart="dragStart"
     @dragover.stop
     :draggable="true"
+    @mouseenter="toggleCardHover"
+    @mouseleave="toggleCardHover"
   >
     <div class="small-card-title">
       <h4>
         {{ card.title }}
       </h4>
-      <faIcon icon="edit" class="icon" @click="showDetail" />
+      <faIcon
+        icon="edit"
+        class="icon"
+        @click="showDetail"
+        :style="{ visibility: isCardHovered ? 'visible' : 'hidden' }"
+      />
     </div>
     <p>{{ card.description }}</p>
   </div>
@@ -26,6 +33,11 @@ export default class Card extends Vue {
   @Prop() card!: card;
   @Mutation setModalIsActive;
   @Mutation setSelectedCard;
+  private isCardHovered = false;
+
+  public toggleCardHover() {
+    this.isCardHovered = !this.isCardHovered;
+  }
 
   public dragStart(e) {
     e.dataTransfer.dropEffect = "move";
@@ -54,17 +66,17 @@ export default class Card extends Vue {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 }
 .small-card-title h4 {
   flex-grow: 2;
   font-size: larger;
-  padding-left: 2rem;
-  margin: 5%;
+  padding-left: 10%;
 }
 .icon {
   margin: 5%;
 }
 .icon:hover {
-  color: #fdcb9e;
+  color: #162447;
 }
 </style>

@@ -25,15 +25,40 @@ export const planningState: PlanState = {
 };
 
 export const mutations: MutationTree<PlanState> = {
+  addNewBoard(state, boardName) {
+    const newBoard: board = {
+      name: boardName,
+      id: boardName.replace(/\s+/g, ""),
+      cards: []
+    };
+    state.boards.push(newBoard);
+  },
+  addNewCardInBoard(
+    state,
+    opts: {
+      boardId: string;
+      cardName: string;
+    }
+  ) {
+    for (const board of state.boards) {
+      if (board.id === opts.boardId) {
+        const newCard: card = {
+          title: opts.cardName,
+          description: "",
+          owner: { id: "", name: "" },
+          assignee: { id: "", name: "" },
+          id: opts.cardName.replace(/\s+/g, ""),
+          comments: []
+        };
+        board.cards.push(newCard);
+      }
+    }
+  },
   setModalIsActive(state, isModalActive: boolean) {
-    const newState = state;
-    newState.modalIsActive = isModalActive;
-    state = { ...newState };
+    state.modalIsActive = isModalActive;
   },
   setSelectedCard(state, newCard: card) {
-    const newState = state;
-    newState.selectedCard = newCard;
-    state = { ...newState };
+    state.selectedCard = newCard;
   },
   updateBoardWithCardIndex(
     state,
@@ -43,25 +68,41 @@ export const mutations: MutationTree<PlanState> = {
       destIndex: number;
     }
   ) {
-    const newState = state;
     let prevBoardIndex;
     let newBoardIndex;
     let prevBoardCardIndex;
     let cardObj;
-    for (let i = 0; i < newState.boards.length; i++) {
-      if (newState.boards[i].id === opts.destBoardId) {
+    for (let i = 0; i < state.boards.length; i++) {
+      if (state.boards[i].id === opts.destBoardId) {
         newBoardIndex = i;
       }
-      for (let j = 0; j < newState.boards[i].cards.length; j++) {
-        if (newState.boards[i].cards[j].id === opts.cardId) {
+      for (let j = 0; j < state.boards[i].cards.length; j++) {
+        if (state.boards[i].cards[j].id === opts.cardId) {
           prevBoardIndex = i;
           prevBoardCardIndex = j;
-          cardObj = newState.boards[i].cards[j];
+          cardObj = state.boards[i].cards[j];
         }
       }
     }
-    newState.boards[prevBoardIndex].cards.splice(prevBoardCardIndex, 1);
-    newState.boards[newBoardIndex].cards.splice(opts.destIndex, 0, cardObj);
+    state.boards[prevBoardIndex].cards.splice(prevBoardCardIndex, 1);
+    state.boards[newBoardIndex].cards.splice(opts.destIndex, 0, cardObj);
+  },
+  removeBoard(state, boardId: string) {
+    for (let i = 0; i < state.boards.length; i++) {
+      if (state.boards[i].id === boardId) {
+        state.boards.splice(i, 1);
+      }
+    }
+  },
+  removeCard(state, cardId: string) {
+    for (let i = 0; i < state.boards.length; i++) {
+      for (let j = 0; j < state.boards[i].cards.length; j++) {
+        if (state.boards[i].cards[j].id === cardId) {
+          state.boards[i].cards.splice(j, 1);
+          return;
+        }
+      }
+    }
   }
 };
 

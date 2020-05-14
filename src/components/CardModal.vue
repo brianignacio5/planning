@@ -30,6 +30,7 @@
         id="owner-name"
         v-model="card.owner.name"
       />
+      <button class="delete-btn" @click="removeCard">Delete card</button>
     </div>
   </div>
 </template>
@@ -39,14 +40,29 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { card } from "../board";
 import { Mutation, State } from "vuex-class";
-
+const ESC_KEY_CODE = 27;
 @Component
 export default class CardModal extends Vue {
   @State("selectedCard") card!: card;
   @State("modalIsActive") isActive: boolean;
   @Mutation setModalIsActive;
+  @Mutation("removeCard") removeCardById;
+
   toggleModal() {
     this.setModalIsActive(!this.isActive);
+  }
+
+  removeCard() {
+    this.removeCardById(this.card.id);
+    this.setModalIsActive(false);
+  }
+
+  mounted() {
+    window.addEventListener("keyup", e => {
+      if (e.keyCode === ESC_KEY_CODE) {
+        this.setModalIsActive(false);
+      }
+    });
   }
 }
 </script>
@@ -94,21 +110,19 @@ export default class CardModal extends Vue {
   background-color: darkgray;
 }
 
-input[type="text"] {
-  padding: 0.5rem;
-  border: 0;
-  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.5);
-  margin: 1rem;
-}
-
-label {
-  font-size: x-large;
-}
-
 .active {
   opacity: 1;
   visibility: visible;
   transform: scale(1);
   transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
+}
+
+.delete-btn {
+  background-color: firebrick;
+  padding: 0.5rem;
+  margin-top: 2rem;
+}
+.delete-btn:hover {
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.5);
 }
 </style>
