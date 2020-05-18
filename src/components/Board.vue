@@ -128,6 +128,7 @@ export default class Board extends Vue {
   width: 25vh;
   height: fit-content;
   margin: 1%;
+  border-radius: 5px;
 }
 .board-title {
   display: flex;

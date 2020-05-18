@@ -53,9 +53,10 @@ export default class Card extends Vue {
 
 <style scoped>
 .card {
-  background-color: #3f3f44;
-  color: #f7f7f7;
+  background-color: #efefef;
+  color: #162447;
   box-shadow: 1px 1px 10px 1px rgba(0, 0, 0, 0.8);
+  border-radius: 5px;
   margin: 5px;
   display: flex;
   flex-direction: column;
@@ -77,6 +78,6 @@ export default class Card extends Vue {
   margin: 5%;
 }
 .icon:hover {
-  color: #162447;
+  color: #3f3f44;
 }
 </style>
