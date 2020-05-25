@@ -32,6 +32,9 @@ export const mutations: MutationTree<PlanState> = {
       }
     }
   },
+  setBoards(state, boards: board[]) {
+    state.boards = boards;
+  },
   setModalIsActive(state, isModalActive: boolean) {
     state.modalIsActive = isModalActive;
   },

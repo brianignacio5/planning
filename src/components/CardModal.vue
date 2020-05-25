@@ -39,22 +39,27 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { card } from "../board";
-import { Mutation, State } from "vuex-class";
+import { Action, Mutation, State } from "vuex-class";
 const ESC_KEY_CODE = 27;
 @Component
 export default class CardModal extends Vue {
-  @State("selectedCard") card!: card;
-  @State("modalIsActive") isActive: boolean;
+  @Action private saveBoardsLocally;
   @Mutation setModalIsActive;
   @Mutation("removeCard") removeCardById;
+  @State("selectedCard") card!: card;
+  @State("modalIsActive") isActive: boolean;
 
   toggleModal() {
     this.setModalIsActive(!this.isActive);
+    if (!this.isActive) {
+      this.saveBoardsLocally();
+    }
   }
 
   removeCard() {
     this.removeCardById(this.card.id);
     this.setModalIsActive(false);
+    this.saveBoardsLocally();
   }
 
   mounted() {

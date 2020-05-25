@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { Mutation } from "vuex-class";
+import { Action, Mutation } from "vuex-class";
 import { board } from "../board";
 import Card from "./Card.vue";
 
@@ -48,6 +48,7 @@ const ESC_KEY_CODE = 27;
   }
 })
 export default class Board extends Vue {
+  @Action private saveBoardsLocally;
   @Prop() private board!: board;
   @Mutation updateBoardWithCardIndex;
   @Mutation addNewCardInBoard;
@@ -71,6 +72,7 @@ export default class Board extends Vue {
 
   public removeBoard() {
     this.removeBoardWithId(this.board.id);
+    this.saveBoardsLocally();
   }
 
   public addNewCardToBoard() {
@@ -80,6 +82,7 @@ export default class Board extends Vue {
         cardName: this.newCardTitle
       });
       this.newCardTitle = "";
+      this.saveBoardsLocally();
     }
   }
 
@@ -127,7 +130,7 @@ export default class Board extends Vue {
   color: #f7f7f7;
   width: 25vh;
   height: fit-content;
-  margin: 1%;
+  margin: 0.25em;
   border-radius: 5px;
 }
 .board-title {

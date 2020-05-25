@@ -57,11 +57,10 @@ export default class Card extends Vue {
   color: #162447;
   box-shadow: 1px 1px 10px 1px rgba(0, 0, 0, 0.8);
   border-radius: 5px;
-  margin: 5px;
+  margin: 0.5em;
   display: flex;
   flex-direction: column;
   justify-items: center;
-  padding: 0.5%;
 }
 .small-card-title {
   display: flex;
