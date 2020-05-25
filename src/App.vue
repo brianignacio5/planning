@@ -22,7 +22,7 @@ import { Component, Vue } from "vue-property-decorator";
 import Board from "./components/Board.vue";
 import CardModal from "./components/CardModal.vue";
 import { board } from "./board";
-import { State, Mutation } from "vuex-class";
+import { Action, State, Mutation } from "vuex-class";
 
 @Component({
   components: {
@@ -33,13 +33,20 @@ import { State, Mutation } from "vuex-class";
 export default class App extends Vue {
   @State boards: board[];
   private newBoardName = "";
+  @Action private saveBoardsLocally;
+  @Action private getBoardsLocally;
   @Mutation("addNewBoard") private addBoardToList;
 
   public addNewBoard() {
     if (this.newBoardName !== "") {
       this.addBoardToList(this.newBoardName);
+      this.saveBoardsLocally();
       this.newBoardName = "";
     }
+  }
+
+  public mounted() {
+    this.getBoardsLocally();
   }
 }
 </script>
