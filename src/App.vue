@@ -53,14 +53,14 @@ export default class App extends Vue {
 
 <style>
 body {
-  background-color: #3f3f44;
+  background-color: #f7f7f7;
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #f7f7f7;
+  color: #000000;
   margin-top: 60px;
 }
 

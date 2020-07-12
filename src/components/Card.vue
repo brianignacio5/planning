@@ -8,31 +8,35 @@
     @mouseenter="toggleCardHover"
     @mouseleave="toggleCardHover"
   >
-    <div class="small-card-title">
-      <h4>
-        {{ card.title }}
-      </h4>
-      <faIcon
-        icon="edit"
-        class="icon"
-        @click="showDetail"
-        :style="{ visibility: isCardHovered ? 'visible' : 'hidden' }"
-      />
+    <div class="main-card">
+      <div class="small-card-title">
+        <h4>
+          {{ card.title }}
+        </h4>
+      </div>
+      <p>{{ card.description }}</p>
     </div>
-    <p>{{ card.description }}</p>
+    <div class="edit-card" v-if="isCardHovered" @click="showDetail">
+      <faIcon icon="edit" class="icon" />
+    </div>
+    <div class="delete-card" v-if="isCardHovered" @click="removeCard">
+      <faIcon icon="times" class="icon" />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { card } from "../board";
-import { Mutation } from "vuex-class";
+import { Action, Mutation } from "vuex-class";
 
 @Component
 export default class Card extends Vue {
+  @Action private saveBoardsLocally;
   @Prop() card!: card;
   @Mutation setModalIsActive;
   @Mutation setSelectedCard;
+  @Mutation("removeCard") removeCardById;
   private isCardHovered = false;
 
   public toggleCardHover() {
@@ -42,6 +46,11 @@ export default class Card extends Vue {
   public dragStart(e) {
     e.dataTransfer.dropEffect = "move";
     e.dataTransfer.setData("card_id", this.card.id);
+  }
+
+  removeCard() {
+    this.removeCardById(this.card.id);
+    this.saveBoardsLocally();
   }
 
   public showDetail() {
@@ -54,29 +63,51 @@ export default class Card extends Vue {
 <style scoped>
 .card {
   background-color: #efefef;
-  color: #162447;
-  box-shadow: 1px 1px 10px 1px rgba(0, 0, 0, 0.8);
+  color: #000000;
+  box-shadow: 3px 3px 6px #2e2d2d29;
   border-radius: 5px;
   margin: 0.5em;
   display: flex;
-  flex-direction: column;
   justify-items: center;
 }
+.card p {
+  margin: 0 15px 15px;
+  transition: all 0.3s ease;
+}
+
+.main-card {
+  width: -webkit-fill-available;
+}
+
 .small-card-title {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
-}
-.small-card-title h4 {
-  flex-grow: 2;
-  font-size: larger;
-  padding-left: 10%;
+  margin-left: 15px;
 }
 .icon {
-  margin: 5%;
+  margin: 1em;
 }
 .icon:hover {
   color: #3f3f44;
+}
+
+.delete-card,
+.edit-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 2em;
+  transition: all 0.3s ease;
+}
+
+.delete-card:hover {
+  width: 5em;
+  background-color: darkred;
+}
+
+.edit-card:hover {
+  width: 5em;
+  background-color: gold;
 }
 </style>

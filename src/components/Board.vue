@@ -29,7 +29,10 @@
           <faIcon icon="times" @click="toggleNewCardInput" class="icon" />
         </div>
       </div>
-      <faIcon icon="plus" @click="toggleNewCardInput" class="icon" v-else />
+      <div v-else class="add-new-card" @click="toggleNewCardInput">
+        <faIcon icon="plus" class="icon" />
+        Add new card
+      </div>
     </div>
   </div>
 </template>
@@ -126,11 +129,12 @@ export default class Board extends Vue {
 
 <style scoped>
 .board {
-  background-color: #162447;
-  color: #f7f7f7;
-  width: 25vh;
+  background: transparent linear-gradient(180deg, #9ce3f3 0%, #3f87ce 100%) 0%
+    0% no-repeat padding-box;
+  color: #000000;
+  width: 40vh;
   height: fit-content;
-  margin: 0.25em;
+  margin: 0.5em;
   border-radius: 5px;
 }
 .board-title {
@@ -143,6 +147,8 @@ export default class Board extends Vue {
 .board-title h2 {
   flex-grow: 2;
   padding-left: 10%;
+  color: #ffffff;
+  text-shadow: 0px 3px 6px #00000070;
 }
 .board-title .icon {
   margin: 5%;
@@ -158,6 +164,24 @@ export default class Board extends Vue {
   justify-content: space-around;
 }
 
+.add-new-card {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  background-color: #efefef;
+  box-shadow: 3px 3px 8px #0000004b;
+  border: 0.25em solid #efefef;
+  border-radius: 5px;
+  padding: 0.5em;
+}
+
+.add-new-card:hover {
+  border: 0.25em solid #3f87ce;
+}
+
+.icon {
+  margin-right: 0.5em;
+}
 .icon:hover {
   color: #3f3f44;
 }
