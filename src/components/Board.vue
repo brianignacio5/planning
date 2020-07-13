@@ -130,25 +130,28 @@ export default class Board extends Vue {
 <style scoped>
 .board {
   background: transparent linear-gradient(180deg, #9ce3f3 0%, #3f87ce 100%) 0%
-    0% no-repeat padding-box;
+    no-repeat padding-box;
   color: #000000;
-  width: 40vh;
+  width: 340px;
   height: fit-content;
   margin: 0.5em;
   border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .board-title {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5%;
+  margin: 0.5em;
 }
 .board-title h2 {
-  flex-grow: 2;
-  padding-left: 10%;
   color: #ffffff;
   text-shadow: 0px 3px 6px #00000070;
+  width: 300px;
+  text-align: left;
 }
 .board-title .icon {
   margin: 5%;
@@ -177,12 +180,13 @@ export default class Board extends Vue {
 
 .add-new-card:hover {
   border: 0.25em solid #3f87ce;
+  color: #3f87ce;
 }
 
 .icon {
   margin-right: 0.5em;
 }
 .icon:hover {
-  color: #3f3f44;
+  color: #3f87ce;
 }
 </style>

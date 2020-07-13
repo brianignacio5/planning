@@ -23,10 +23,12 @@ export const mutations: MutationTree<PlanState> = {
         const newCard: card = {
           title: opts.cardName,
           description: "",
-          owner: { id: "", name: "" },
-          assignee: { id: "", name: "" },
+          owner: { id: "", name: "", picture: "" },
+          assignee: { id: "", name: "", picture: "" },
           id: opts.cardName.replace(/\s+/g, ""),
-          comments: []
+          comments: [],
+          createdOn: new Date(),
+          picture: ""
         };
         board.cards.push(newCard);
       }
