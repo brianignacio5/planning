@@ -5,17 +5,20 @@ export interface board {
 }
 
 export interface card {
-  id: string;
-  title: string;
-  description: string;
   assignee: user;
-  owner: user;
   comments: comment[];
+  description: string;
+  id: string;
+  owner: user;
+  picture: string;
+  title: string;
+  createdOn: Date;
 }
 
 export interface user {
   id: string;
   name: string;
+  picture: string;
 }
 
 export interface comment {

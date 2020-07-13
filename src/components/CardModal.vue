@@ -30,6 +30,13 @@
         id="owner-name"
         v-model="card.owner.name"
       />
+      <label for="pictureUrl">Picture:</label>
+      <input
+        type="text"
+        name="pictureUrl"
+        id="picture-url"
+        v-model="card.picture"
+      />
       <button class="delete-btn" @click="removeCard">Delete card</button>
     </div>
   </div>
@@ -91,7 +98,7 @@ export default class CardModal extends Vue {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #162447;
+  background-color: #3f87ce;
   padding: 5rem 10rem;
   width: 24rem;
   border-radius: 0.5em;
@@ -112,7 +119,7 @@ export default class CardModal extends Vue {
   border-radius: 0.25rem;
 }
 .close-button:hover {
-  background-color: darkgray;
+  background-color: #ea5151;
 }
 
 .active {
@@ -123,9 +130,11 @@ export default class CardModal extends Vue {
 }
 
 .delete-btn {
-  background-color: firebrick;
+  background-color: #ea5151;
   padding: 0.5rem;
-  margin-top: 2rem;
+  margin-top: 2em;
+  border: 0;
+  border-radius: 5px;
 }
 .delete-btn:hover {
   box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.5);
