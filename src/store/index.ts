@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex, { ActionTree } from "vuex";
 import { board, card, user } from "../board";
 import { mutations } from "./mutations";
+import PlanningDataService from "../dataService";
 Vue.use(Vuex);
 
 export interface PlanState {
@@ -43,6 +44,14 @@ export const actions: ActionTree<PlanState, any> = {
         console.log(error);
         localStorage.removeItem("boards");
       }
+    }
+  },
+  async loginByGithub() {
+    try {
+      const requestedUser = await PlanningDataService.loginUserByGithub();
+      console.log(requestedUser.data);
+    } catch (error) {
+      console.log(error);
     }
   },
   saveBoardsLocally(context) {

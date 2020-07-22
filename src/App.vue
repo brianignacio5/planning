@@ -5,6 +5,7 @@
         <img :src="myUser.picture" alt="profile-pic" />
       </div>
       <div class="profile-name">{{ myUser.name }}</div>
+      <button @click="this.loginByGithub">Login with Github</button>
     </div>
     <div class="flexbox">
       <Board v-for="board in boards" :board="board" :key="board.id" />
@@ -40,8 +41,9 @@ export default class App extends Vue {
   @State boards: board[];
   @State("myUser") storeMyUser: user;
   private newBoardName = "";
-  @Action private saveBoardsLocally;
   @Action private getBoardsLocally;
+  @Action private loginByGithub;
+  @Action private saveBoardsLocally;
   @Mutation("addNewBoard") private addBoardToList;
 
   public addNewBoard() {
