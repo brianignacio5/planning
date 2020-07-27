@@ -1,6 +1,6 @@
 import { MutationTree } from "vuex";
 import { PlanState } from "./index";
-import { board, card } from "../board";
+import { board, card, user } from "../board";
 
 export const mutations: MutationTree<PlanState> = {
   addNewBoard(state, boardName) {
@@ -23,8 +23,8 @@ export const mutations: MutationTree<PlanState> = {
         const newCard: card = {
           title: opts.cardName,
           description: "",
-          owner: { id: "", name: "", picture: "" },
-          assignee: { id: "", name: "", picture: "" },
+          owner: { token: "", name: "", picture: "" },
+          assignee: { token: "", name: "", picture: "" },
           id: opts.cardName.replace(/\s+/g, ""),
           comments: [],
           createdOn: new Date(),
@@ -42,6 +42,9 @@ export const mutations: MutationTree<PlanState> = {
   },
   setSelectedCard(state, newCard: card) {
     state.selectedCard = newCard;
+  },
+  setUser(state, newUser: user) {
+    state.myUser = newUser;
   },
   updateBoardWithCardIndex(
     state,

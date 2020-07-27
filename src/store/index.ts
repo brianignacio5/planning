@@ -16,18 +16,18 @@ export const planningState: PlanState = {
   boards: [],
   modalIsActive: false,
   myUser: {
-    id: "madsStrings",
+    token: "madsStrings",
     name: "Mads Nielsen",
     picture:
       "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
   },
   selectedCard: {
-    assignee: { id: "", name: "", picture: "" },
+    assignee: { token: "", name: "", picture: "" },
     comments: [],
     createdOn: new Date(),
     description: "",
     id: "",
-    owner: { id: "", name: "", picture: "" },
+    owner: { token: "", name: "", picture: "" },
     picture: "",
     title: ""
   }

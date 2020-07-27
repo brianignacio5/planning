@@ -16,9 +16,9 @@ export interface card {
 }
 
 export interface user {
-  id: string;
   name: string;
   picture: string;
+  token: string;
 }
 
 export interface comment {
