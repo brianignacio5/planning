@@ -2,7 +2,7 @@
   <div id="app">
     <div class="navbar">
       <div class="profile-pic">
-        <img :src="myUser.picture" alt="profile-pic" />
+        <img :src="myUser.picture || './profile.png'" alt="profile-pic" />
       </div>
       <div class="profile-name">{{ myUser.name }}</div>
     </div>
@@ -59,15 +59,12 @@ export default class App extends Vue {
 
   public mounted() {
     const newUserData = this.$cookies.get("planningJwt");
-    console.log(newUserData);
     if (newUserData) {
-      console.log(newUserData);
       const newUser = {
         name: newUserData.name,
         picture: newUserData.picture,
         token: newUserData.token,
       };
-      console.log(newUser);
       this.setUser(newUser);
     }
     this.getBoardsLocally();
