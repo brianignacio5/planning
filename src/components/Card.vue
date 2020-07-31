@@ -52,7 +52,7 @@ export default class Card extends Vue {
 
   public dragStart(e) {
     e.dataTransfer.dropEffect = "move";
-    e.dataTransfer.setData("card_id", this.card.id);
+    e.dataTransfer.setData("card_id", this.card._id);
   }
 
   get cardDate() {
@@ -66,7 +66,7 @@ export default class Card extends Vue {
   }
 
   removeCard() {
-    this.removeCardById(this.card.id);
+    this.removeCardById(this.card._id);
     this.saveBoardsLocally();
   }
 

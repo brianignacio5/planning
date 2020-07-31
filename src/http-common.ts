@@ -6,5 +6,6 @@ export default axios.create({
   baseURL: `http://${backendUrl}:${backendPort}`,
   headers: {
     "Content-type": "application/json"
-  }
+  },
+  withCredentials: true
 });

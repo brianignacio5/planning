@@ -42,12 +42,14 @@ export default class App extends Vue {
   private newBoardName = "";
   @Action private getBoardsLocally;
   @Action private saveBoardsLocally;
+  @Action private createBoard;
   @Mutation("addNewBoard") private addBoardToList;
   @Mutation setUser;
 
   public addNewBoard() {
     if (this.newBoardName !== "") {
-      this.addBoardToList(this.newBoardName);
+      this.createBoard(this.newBoardName);
+      // this.addBoardToList(this.newBoardName);
       this.saveBoardsLocally();
       this.newBoardName = "";
     }

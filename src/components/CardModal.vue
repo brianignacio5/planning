@@ -16,20 +16,6 @@
         id="card-description"
         v-model="card.description"
       />
-      <label for="assigneName">Assigned to</label>
-      <input
-        type="text"
-        name="assigneName"
-        id="assignee-name"
-        v-model="card.assignee.name"
-      />
-      <label for="ownerName">Owner:</label>
-      <input
-        type="text"
-        name="ownerName"
-        id="owner-name"
-        v-model="card.owner.name"
-      />
       <label for="pictureUrl">Picture:</label>
       <input
         type="text"
@@ -64,7 +50,7 @@ export default class CardModal extends Vue {
   }
 
   removeCard() {
-    this.removeCardById(this.card.id);
+    this.removeCardById(this.card._id);
     this.setModalIsActive(false);
     this.saveBoardsLocally();
   }

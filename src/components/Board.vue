@@ -74,14 +74,14 @@ export default class Board extends Vue {
   }
 
   public removeBoard() {
-    this.removeBoardWithId(this.board.id);
+    this.removeBoardWithId(this.board._id);
     this.saveBoardsLocally();
   }
 
   public addNewCardToBoard() {
     if (this.newCardTitle !== "") {
       this.addNewCardInBoard({
-        boardId: this.board.id,
+        boardId: this.board._id,
         cardName: this.newCardTitle
       });
       this.newCardTitle = "";
@@ -94,14 +94,14 @@ export default class Board extends Vue {
     const dropYPosition = e.pageY;
     let isBoardUpdated = false;
     for (let i = 0; i < this.board.cards.length; i++) {
-      const cardYPosition = document.getElementById(this.board.cards[i].id);
+      const cardYPosition = document.getElementById(this.board.cards[i]._id);
       if (
         cardYPosition &&
         cardYPosition.getBoundingClientRect().y > dropYPosition
       ) {
         this.updateBoardWithCardIndex({
           cardId,
-          destBoardId: this.board.id,
+          destBoardId: this.board._id,
           destIndex: i
         });
         isBoardUpdated = true;
@@ -111,7 +111,7 @@ export default class Board extends Vue {
     if (!isBoardUpdated) {
       this.updateBoardWithCardIndex({
         cardId,
-        destBoardId: this.board.id,
+        destBoardId: this.board._id,
         destIndex: this.board.cards.length
       });
     }

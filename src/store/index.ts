@@ -19,18 +19,18 @@ export const planningState: PlanState = {
     token: "madsStrings",
     name: "Mads Nielsen",
     picture:
-      "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+      "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+    boards: [],
   },
   selectedCard: {
-    assignee: { token: "", name: "", picture: "" },
+    board: "",
     comments: [],
     createdOn: new Date(),
     description: "",
-    id: "",
-    owner: { token: "", name: "", picture: "" },
+    _id: "",
     picture: "",
-    title: ""
-  }
+    title: "",
+  },
 };
 
 export const actions: ActionTree<PlanState, any> = {
@@ -46,10 +46,14 @@ export const actions: ActionTree<PlanState, any> = {
       }
     }
   },
-  async loginByGithub() {
+  async createBoard(context, newBoard: string) {
     try {
-      const requestedUser = await PlanningDataService.loginUserByGithub();
-      console.log(requestedUser.data);
+      console.log("hello" + context.state.myUser.token);
+      const savedBoard = await PlanningDataService.createBoard(
+        newBoard,
+        context.state.myUser.token
+      );
+      context.state.boards.push(savedBoard);
     } catch (error) {
       console.log(error);
     }
@@ -57,12 +61,12 @@ export const actions: ActionTree<PlanState, any> = {
   saveBoardsLocally(context) {
     const parsedBoards = JSON.stringify(context.state.boards);
     localStorage.setItem("boards", parsedBoards);
-  }
+  },
 };
 
 export default new Vuex.Store({
   state: planningState,
   mutations,
   actions,
-  modules: {}
+  modules: {},
 });

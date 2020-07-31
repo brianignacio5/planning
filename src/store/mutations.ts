@@ -3,11 +3,12 @@ import { PlanState } from "./index";
 import { board, card, user } from "../board";
 
 export const mutations: MutationTree<PlanState> = {
-  addNewBoard(state, boardName) {
+  addNewBoard(state, boardName: string) {
     const newBoard: board = {
       name: boardName,
-      id: boardName.replace(/\s+/g, ""),
-      cards: []
+      _id: boardName.replace(/\s+/g, ""),
+      cards: [],
+      user: state.myUser
     };
     state.boards.push(newBoard);
   },
@@ -19,16 +20,15 @@ export const mutations: MutationTree<PlanState> = {
     }
   ) {
     for (const board of state.boards) {
-      if (board.id === opts.boardId) {
+      if (board._id === opts.boardId) {
         const newCard: card = {
           title: opts.cardName,
           description: "",
-          owner: { token: "", name: "", picture: "" },
-          assignee: { token: "", name: "", picture: "" },
-          id: opts.cardName.replace(/\s+/g, ""),
+          _id: opts.cardName.replace(/\s+/g, ""),
           comments: [],
           createdOn: new Date(),
-          picture: ""
+          picture: "",
+          board: opts.boardId
         };
         board.cards.push(newCard);
       }
@@ -59,11 +59,11 @@ export const mutations: MutationTree<PlanState> = {
     let prevBoardCardIndex;
     let cardObj;
     for (let i = 0; i < state.boards.length; i++) {
-      if (state.boards[i].id === opts.destBoardId) {
+      if (state.boards[i]._id === opts.destBoardId) {
         newBoardIndex = i;
       }
       for (let j = 0; j < state.boards[i].cards.length; j++) {
-        if (state.boards[i].cards[j].id === opts.cardId) {
+        if (state.boards[i].cards[j]._id === opts.cardId) {
           prevBoardIndex = i;
           prevBoardCardIndex = j;
           cardObj = state.boards[i].cards[j];
@@ -75,7 +75,7 @@ export const mutations: MutationTree<PlanState> = {
   },
   removeBoard(state, boardId: string) {
     for (let i = 0; i < state.boards.length; i++) {
-      if (state.boards[i].id === boardId) {
+      if (state.boards[i]._id === boardId) {
         state.boards.splice(i, 1);
       }
     }
@@ -83,7 +83,7 @@ export const mutations: MutationTree<PlanState> = {
   removeCard(state, cardId: string) {
     for (let i = 0; i < state.boards.length; i++) {
       for (let j = 0; j < state.boards[i].cards.length; j++) {
-        if (state.boards[i].cards[j].id === cardId) {
+        if (state.boards[i].cards[j]._id === cardId) {
           state.boards[i].cards.splice(j, 1);
           return;
         }

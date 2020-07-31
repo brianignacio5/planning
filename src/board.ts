@@ -1,15 +1,15 @@
 export interface board {
-  id: string;
+  _id: string;
   name: string;
+  user: user;
   cards: card[];
 }
 
 export interface card {
-  assignee: user;
+  board: string;
   comments: comment[];
   description: string;
-  id: string;
-  owner: user;
+  _id: string;
   picture: string;
   title: string;
   createdOn: Date;
@@ -18,12 +18,13 @@ export interface card {
 export interface user {
   name: string;
   picture: string;
+  boards: board[];
   token: string;
 }
 
 export interface comment {
   content: string;
-  id: string;
+  _id: string;
   createdOn: Date;
   createdBy: user;
 }
