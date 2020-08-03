@@ -43,7 +43,6 @@ export default class App extends Vue {
   @Action private getBoardsLocally;
   @Action private saveBoardsLocally;
   @Action private createBoard;
-  @Mutation("addNewBoard") private addBoardToList;
   @Mutation setUser;
 
   public addNewBoard() {

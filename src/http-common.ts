@@ -5,7 +5,7 @@ const backendPort = process.env.BACKEND_PORT || "3000";
 export default axios.create({
   baseURL: `http://${backendUrl}:${backendPort}`,
   headers: {
-    "Content-type": "application/json"
+    "Content-type": "application/json",
   },
   withCredentials: true
 });

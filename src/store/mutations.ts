@@ -3,37 +3,6 @@ import { PlanState } from "./index";
 import { board, card, user } from "../board";
 
 export const mutations: MutationTree<PlanState> = {
-  addNewBoard(state, boardName: string) {
-    const newBoard: board = {
-      name: boardName,
-      _id: boardName.replace(/\s+/g, ""),
-      cards: [],
-      user: state.myUser
-    };
-    state.boards.push(newBoard);
-  },
-  addNewCardInBoard(
-    state,
-    opts: {
-      boardId: string;
-      cardName: string;
-    }
-  ) {
-    for (const board of state.boards) {
-      if (board._id === opts.boardId) {
-        const newCard: card = {
-          title: opts.cardName,
-          description: "",
-          _id: opts.cardName.replace(/\s+/g, ""),
-          comments: [],
-          createdOn: new Date(),
-          picture: "",
-          board: opts.boardId
-        };
-        board.cards.push(newCard);
-      }
-    }
-  },
   setBoards(state, boards: board[]) {
     state.boards = boards;
   },

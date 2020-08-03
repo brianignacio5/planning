@@ -40,7 +40,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Action, Mutation } from "vuex-class";
-import { board } from "../board";
+import { board, card } from "../board";
 import Card from "./Card.vue";
 
 const ESC_KEY_CODE = 27;
@@ -51,10 +51,12 @@ const ESC_KEY_CODE = 27;
   }
 })
 export default class Board extends Vue {
+  @Action private createCard;
+  @Action private deleteBoard;
+  @Action private updateCard;
   @Action private saveBoardsLocally;
   @Prop() private board!: board;
   @Mutation updateBoardWithCardIndex;
-  @Mutation addNewCardInBoard;
   @Mutation("removeBoard") removeBoardWithId;
   private isNewCardInputVisible = false;
   private isBoardHovered = false;
@@ -74,16 +76,22 @@ export default class Board extends Vue {
   }
 
   public removeBoard() {
+    this.deleteBoard(this.board._id);
     this.removeBoardWithId(this.board._id);
     this.saveBoardsLocally();
   }
 
   public addNewCardToBoard() {
     if (this.newCardTitle !== "") {
-      this.addNewCardInBoard({
-        boardId: this.board._id,
-        cardName: this.newCardTitle
-      });
+      const newCard = {
+        board: this.board._id,
+        comments: [],
+        title: this.newCardTitle,
+        description: "",
+        picture: "",
+        createdOn: new Date(),
+      };
+      this.createCard(newCard);
       this.newCardTitle = "";
       this.saveBoardsLocally();
     }
@@ -91,6 +99,7 @@ export default class Board extends Vue {
 
   public drop(e) {
     const cardId = e.dataTransfer.getData("card_id");
+    console.log(cardId);    
     const dropYPosition = e.pageY;
     let isBoardUpdated = false;
     for (let i = 0; i < this.board.cards.length; i++) {
@@ -99,6 +108,7 @@ export default class Board extends Vue {
         cardYPosition &&
         cardYPosition.getBoundingClientRect().y > dropYPosition
       ) {
+        this.updateCard({ _id: cardId, board: this.board, insertIndex: i });
         this.updateBoardWithCardIndex({
           cardId,
           destBoardId: this.board._id,
@@ -109,6 +119,7 @@ export default class Board extends Vue {
       }
     }
     if (!isBoardUpdated) {
+      this.updateCard({ _id: cardId, board: this.board, insertIndex: this.board.cards.length });
       this.updateBoardWithCardIndex({
         cardId,
         destBoardId: this.board._id,

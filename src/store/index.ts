@@ -34,7 +34,12 @@ export const planningState: PlanState = {
 };
 
 export const actions: ActionTree<PlanState, any> = {
-  getBoardsLocally(context) {
+  async getBoardsLocally(context) {
+    const onlineBoards = await PlanningDataService.getAllBoardsForUser(context.state.myUser.token);
+    if (onlineBoards) {
+      context.commit("setBoards", onlineBoards);
+      return;
+    }
     const localBoards = localStorage.getItem("boards");
     if (localBoards) {
       try {
@@ -48,12 +53,59 @@ export const actions: ActionTree<PlanState, any> = {
   },
   async createBoard(context, newBoard: string) {
     try {
-      console.log("hello" + context.state.myUser.token);
       const savedBoard = await PlanningDataService.createBoard(
         newBoard,
         context.state.myUser.token
       );
       context.state.boards.push(savedBoard);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async createCard(context, newCard: card) {
+    try {
+      const savedCard = await PlanningDataService.createCard(
+        newCard,
+        context.state.myUser.token
+      );
+      for (let i = 0; i < context.state.boards.length; i++) {
+        const board = context.state.boards[i];
+        if (board._id === savedCard.board) {
+          context.state.boards[i].cards.push(savedCard);
+          break;
+        }
+      }
+      this.dispatch("saveBoardsLocally");
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async deleteBoard(context, boardId: string) {
+    try {
+      const resultBoard = await PlanningDataService.deleteBoard(
+        boardId,
+        context.state.myUser.token
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async deleteCard(context, cardId: string) {
+    try {
+      const resultCard = await PlanningDataService.deleteCard(
+        cardId,
+        context.state.myUser.token
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async updateCard(context, modifiedCard: card) {
+    try {
+      const resultCard = await PlanningDataService.updateCard(
+        modifiedCard,
+        context.state.myUser.token
+      );
     } catch (error) {
       console.log(error);
     }

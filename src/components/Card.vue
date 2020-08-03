@@ -40,6 +40,7 @@ import moment from "moment";
 @Component
 export default class Card extends Vue {
   @Action private saveBoardsLocally;
+  @Action private deleteCard;
   @Prop() card!: card;
   @Mutation setModalIsActive;
   @Mutation setSelectedCard;
@@ -52,6 +53,7 @@ export default class Card extends Vue {
 
   public dragStart(e) {
     e.dataTransfer.dropEffect = "move";
+    console.log(this.card);
     e.dataTransfer.setData("card_id", this.card._id);
   }
 
@@ -66,6 +68,7 @@ export default class Card extends Vue {
   }
 
   removeCard() {
+    this.deleteCard(this.card._id);
     this.removeCardById(this.card._id);
     this.saveBoardsLocally();
   }

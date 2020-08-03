@@ -37,6 +37,7 @@ const ESC_KEY_CODE = 27;
 @Component
 export default class CardModal extends Vue {
   @Action private saveBoardsLocally;
+  @Action private updateCard;
   @Mutation setModalIsActive;
   @Mutation("removeCard") removeCardById;
   @State("selectedCard") card!: card;
@@ -47,6 +48,7 @@ export default class CardModal extends Vue {
     if (!this.isActive) {
       this.saveBoardsLocally();
     }
+    this.updateCard(this.card);
   }
 
   removeCard() {
