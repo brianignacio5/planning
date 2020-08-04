@@ -6,6 +6,9 @@ export const mutations: MutationTree<PlanState> = {
   setBoards(state, boards: board[]) {
     state.boards = boards;
   },
+  setCommentsModalIsActive(state, isCommentModalActive: boolean) {
+    state.commentsModalIsActive = isCommentModalActive;
+  },
   setModalIsActive(state, isModalActive: boolean) {
     state.modalIsActive = isModalActive;
   },

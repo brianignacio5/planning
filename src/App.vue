@@ -7,7 +7,7 @@
       <div class="profile-name">{{ myUser.name }}</div>
     </div>
     <div class="flexbox">
-      <Board v-for="board in boards" :board="board" :key="board.id" />
+      <Board v-for="board in boards" :board="board" :key="board._id" />
       <div class="add-board">
         <input
           type="text"
@@ -19,6 +19,7 @@
         <faIcon icon="plus" class="icon" @click="addNewBoard" />
       </div>
       <CardModal />
+      <CommentModal />
     </div>
   </div>
 </template>
@@ -27,13 +28,15 @@
 import { Component, Vue } from "vue-property-decorator";
 import Board from "./components/Board.vue";
 import CardModal from "./components/CardModal.vue";
+import CommentModal from "./components/CommentModal.vue";
 import { board, user } from "./board";
 import { Action, State, Mutation } from "vuex-class";
 
 @Component({
   components: {
     Board,
-    CardModal
+    CardModal,
+    CommentModal
   }
 })
 export default class App extends Vue {

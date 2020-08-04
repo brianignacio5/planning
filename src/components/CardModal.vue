@@ -5,21 +5,21 @@
       <label for="card-title">Title</label>
       <input
         type="text"
-        name="card-title"
+        name="title"
         id="card-title"
         v-model="card.title"
       />
       <label for="card-description">Description</label>
       <input
         type="text"
-        name="cardDescription"
+        name="description"
         id="card-description"
         v-model="card.description"
       />
       <label for="pictureUrl">Picture:</label>
       <input
         type="text"
-        name="pictureUrl"
+        name="picture"
         id="picture-url"
         v-model="card.picture"
       />
@@ -47,8 +47,8 @@ export default class CardModal extends Vue {
     this.setModalIsActive(!this.isActive);
     if (!this.isActive) {
       this.saveBoardsLocally();
+      this.updateCard(this.card);
     }
-    this.updateCard(this.card);
   }
 
   removeCard() {
@@ -60,6 +60,10 @@ export default class CardModal extends Vue {
   mounted() {
     window.addEventListener("keyup", e => {
       if (e.keyCode === ESC_KEY_CODE) {
+        if (this.isActive) {
+          this.saveBoardsLocally();
+          this.updateCard(this.card);
+        }
         this.setModalIsActive(false);
       }
     });
@@ -67,7 +71,7 @@ export default class CardModal extends Vue {
 }
 </script>
 
-<style scoped>
+<style>
 .card-modal {
   position: fixed;
   left: 0;

@@ -23,6 +23,7 @@ export interface user {
 }
 
 export interface comment {
+  card: string;
   content: string;
   _id: string;
   createdOn: Date;

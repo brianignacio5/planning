@@ -12,7 +12,7 @@
       <img :src="card.picture" alt="card-picture" />
     </div>
     <div class="card-content">
-      <div class="main-card">
+      <div class="main-card" @click="showComments">
         <div class="small-card-title">
           <span>
             {{ card.title }}
@@ -42,6 +42,7 @@ export default class Card extends Vue {
   @Action private saveBoardsLocally;
   @Action private deleteCard;
   @Prop() card!: card;
+  @Mutation setCommentsModalIsActive;
   @Mutation setModalIsActive;
   @Mutation setSelectedCard;
   @Mutation("removeCard") removeCardById;
@@ -76,6 +77,11 @@ export default class Card extends Vue {
   public showDetail() {
     this.setSelectedCard(this.card);
     this.setModalIsActive(true);
+  }
+
+  public showComments() {
+    this.setSelectedCard(this.card);
+    this.setCommentsModalIsActive(true);
   }
 }
 </script>

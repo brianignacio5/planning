@@ -13,7 +13,7 @@
         :style="{ visibility: isBoardHovered ? 'visible' : 'hidden' }"
       />
     </div>
-    <Card v-for="card in board.cards" :card.sync="card" :key="card.id" />
+    <Card v-for="card in board.cards" :card.sync="card" :key="card._id" />
     <div class="add-section">
       <div class="add-card-input" v-if="isNewCardInputVisible">
         <textarea
@@ -86,7 +86,7 @@ export default class Board extends Vue {
       const newCard = {
         board: this.board._id,
         comments: [],
-        title: this.newCardTitle,
+        title: this.newCardTitle.trim(),
         description: "",
         picture: "",
         createdOn: new Date(),
