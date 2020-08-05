@@ -88,10 +88,10 @@ export default class Card extends Vue {
 
 <style scoped>
 .card {
-  background-color: #efefef;
+  background-color: #fff;
   color: #000000;
   box-shadow: 3px 3px 6px #2e2d2d29;
-  border-radius: 5px;
+  border-radius: 10px;
   margin: 0.5em;
   display: flex;
   flex-direction: column;
@@ -132,9 +132,6 @@ export default class Card extends Vue {
 
 .icon {
   margin: 1em;
-}
-.icon:hover {
-  color: #3f87ce;
 }
 
 .delete-card,

@@ -20,8 +20,8 @@ export const planningState: PlanState = {
   myUser: {
     token: "madsStrings",
     name: "Mads Nielsen",
-    picture:
-      "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+    email: "me@mail.com",
+    picture:"./profile.png",
     boards: []
   },
   selectedCard: {
@@ -130,7 +130,7 @@ export const actions: ActionTree<PlanState, any> = {
   },
   async deleteComment(context, commentId: string) {
     try {
-      const resultComment = await PlanningDataService.deleteCard(
+      const resultComment = await PlanningDataService.deleteComment(
         commentId,
         context.state.myUser.token
       );

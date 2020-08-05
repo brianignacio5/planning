@@ -140,8 +140,7 @@ export default class Board extends Vue {
 
 <style scoped>
 .board {
-  background: transparent linear-gradient(180deg, #9ce3f3 0%, #3f87ce 100%) 0%
-    no-repeat padding-box;
+  background: #BEBEBE 0% 0% no-repeat padding-box;
   color: #000000;
   width: 340px;
   height: fit-content;
@@ -190,14 +189,14 @@ export default class Board extends Vue {
 }
 
 .add-new-card:hover {
-  border: 0.25em solid #3f87ce;
-  color: #3f87ce;
+  border: 0.25em solid #EA5151;
+  color: #EA5151;
 }
 
 .icon {
   margin-right: 0.5em;
 }
 .icon:hover {
-  color: #3f87ce;
+  color: #EA5151;
 }
 </style>

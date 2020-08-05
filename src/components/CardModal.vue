@@ -90,7 +90,7 @@ export default class CardModal extends Vue {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #3f87ce;
+  background-color: #bebebe;
   padding: 5rem 10rem;
   width: 24rem;
   border-radius: 0.5em;

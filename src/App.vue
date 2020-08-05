@@ -1,61 +1,40 @@
 <template>
   <div id="app">
-    <div class="navbar">
-      <div class="profile-pic">
-        <img :src="myUser.picture || './profile.png'" alt="profile-pic" />
+    <div class="columns">
+      <div class="sidenav">
+        <div class="board-section">
+          <router-link to="/boards"><faIcon icon="th-large" class="icon" size="2x" /> <p>Boards</p></router-link>
+        </div>
+        <div class="calendar-section">
+          <router-link to="/calendar"><faIcon icon="calendar-day" class="icon" size="2x" /> <p>Calendar</p></router-link>
+        </div>
+        <div class="settings-section">
+          <router-link to="/settings"><faIcon icon="cog" class="icon" size="2x" /> <p>Settings</p></router-link>
+        </div>
       </div>
-      <div class="profile-name">{{ myUser.name }}</div>
-    </div>
-    <div class="flexbox">
-      <Board v-for="board in boards" :board="board" :key="board._id" />
-      <div class="add-board">
-        <input
-          type="text"
-          name="new-board-name"
-          placeholder="Add a board"
-          v-model="newBoardName"
-          @keyup.enter="addNewBoard"
-        />
-        <faIcon icon="plus" class="icon" @click="addNewBoard" />
+      <div class="content">
+        <div class="navbar">
+          <div class="profile-name">{{ myUser.name }}</div>
+          <div class="profile-pic">
+            <img :src="myUser.picture || './profile.png'" alt="profile-pic" />
+          </div>
+        </div>
+        <router-view></router-view>
       </div>
-      <CardModal />
-      <CommentModal />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import Board from "./components/Board.vue";
-import CardModal from "./components/CardModal.vue";
-import CommentModal from "./components/CommentModal.vue";
-import { board, user } from "./board";
+import { user } from "./board";
 import { Action, State, Mutation } from "vuex-class";
 
-@Component({
-  components: {
-    Board,
-    CardModal,
-    CommentModal
-  }
-})
+@Component
 export default class App extends Vue {
-  @State boards: board[];
-  @State("myUser") storeMyUser: user;
-  private newBoardName = "";
   @Action private getBoardsLocally;
-  @Action private saveBoardsLocally;
-  @Action private createBoard;
+  @State("myUser") storeMyUser: user;
   @Mutation setUser;
-
-  public addNewBoard() {
-    if (this.newBoardName !== "") {
-      this.createBoard(this.newBoardName);
-      // this.addBoardToList(this.newBoardName);
-      this.saveBoardsLocally();
-      this.newBoardName = "";
-    }
-  }
 
   get myUser() {
     return this.storeMyUser;
@@ -66,12 +45,13 @@ export default class App extends Vue {
     if (newUserData) {
       const newUser = {
         name: newUserData.name,
+        email: newUserData.email,
         picture: newUserData.picture,
         token: newUserData.token,
       };
       this.setUser(newUser);
+      this.getBoardsLocally();
     }
-    this.getBoardsLocally();
   }
 }
 </script>
@@ -86,12 +66,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #000000;
-}
-
-.flexbox {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
 }
 
 input[type="text"],
@@ -110,6 +84,33 @@ label {
   display: flex;
   align-items: center;
   margin: 0.25em;
+  justify-content: flex-end;
+  background: transparent linear-gradient(90deg, #272626 0%, #4A4949 100%) 0% 0% no-repeat padding-box;
+}
+
+.columns {
+  display: flex;
+}
+
+.content {
+  flex-grow: 2;
+}
+
+.sidenav {
+  display: flex;
+  background-color: #ffffff;
+  flex-direction: column;
+  width: 10em;
+  justify-content: space-around;
+}
+
+.sidenav a {
+  text-decoration: none;
+  color: #000;
+}
+
+.sidenav a:hover {
+  color: #EA5151;
 }
 
 .profile-pic {
@@ -119,13 +120,12 @@ label {
   width: 5em;
   height: 5em;
   margin: 0.25em;
-  border: 0.25em solid #3f87ce;
   border-radius: 1em;
 }
 .profile-name {
   margin: 0.25em;
   font-family: Avenir;
-  color: #3f87ce;
+  color: #ffffff;
   font-size: 36px;
 }
 
@@ -133,15 +133,7 @@ label {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 1em;
+  border-radius: 8px;
 }
 
-.add-board {
-  margin: 1%;
-  padding: 0.5em;
-  align-self: start;
-}
-.icon:hover {
-  color: #3f87ce;
-}
 </style>

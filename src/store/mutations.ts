@@ -1,6 +1,6 @@
 import { MutationTree } from "vuex";
 import { PlanState } from "./index";
-import { board, card, user } from "../board";
+import { board, card, user, comment } from "../board";
 
 export const mutations: MutationTree<PlanState> = {
   setBoards(state, boards: board[]) {
@@ -58,6 +58,20 @@ export const mutations: MutationTree<PlanState> = {
         if (state.boards[i].cards[j]._id === cardId) {
           state.boards[i].cards.splice(j, 1);
           return;
+        }
+      }
+    }
+  },
+  removeComment(state, comment: comment) {
+    for (let i = 0; i < state.boards.length; i++) {
+      for (let j = 0; j < state.boards[i].cards.length; j++) {
+        if (state.boards[i].cards[j]._id === comment.card) {
+          for (let k = 0; k < state.boards[i].cards[j].comments.length; k++) {
+            if (state.boards[i].cards[j].comments[k]._id === comment._id) {
+              state.boards[i].cards[j].comments.splice(k, 1);
+              return;
+            }
+          }
         }
       }
     }

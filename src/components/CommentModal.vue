@@ -3,7 +3,6 @@
     <div class="modal-content">
       <span class="close-button" @click="toggleModal">&times;</span>
       <h2>{{ card.title }}</h2>
-      <h4>{{ card.description }}</h4>
 
       <Comment v-for="comment in card.comments" :comment.sync="comment" :key="comment._id"/>
 
@@ -97,4 +96,16 @@
   }
 </script>
 
-<style></style>
+<style>
+.add-new-comment {
+  margin: 0.5em;
+  transition: all 0.3s ease;
+}
+.add-new-comment:hover {
+  background-color: #fff;
+}
+.add-sections-btns {
+  display: flex;
+  justify-content: space-around;
+}
+</style>

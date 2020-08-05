@@ -8,20 +8,28 @@
         <p class="comment-name">{{comment.createdBy.name || "username"}}</p>
         <p class="small">{{cardDate}}</p>
       </div>
-      <p>{{comment.content}}</p>
+      <div class="comment-content-text">{{comment.content}}</div>
+    </div>
+    <div v-if="isCurrentUser" class="comment-btns">
+      <div class="delete-comment">
+        <faIcon icon="times" class="icon" @click="deleteThisComment" />
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { comment } from "../board";
-import { Action, Mutation } from "vuex-class";
+import { comment, user } from "../board";
+import { Action, Mutation, State } from "vuex-class";
 import moment from "moment";
 
 @Component
 export default class Comment extends Vue {
+  @Action deleteComment;
+  @Mutation removeComment;
   @Prop() comment!: comment;
+  @State("myUser") storeMyUser: user;
   get cardDate() {
     if (this.comment.createdOn) {
       const formattedDate = moment(this.comment.createdOn.toString()).format(
@@ -31,28 +39,38 @@ export default class Comment extends Vue {
     }
     return "";
   }
+
+  get isCurrentUser() {
+    return this.comment.createdBy.email.localeCompare(this.storeMyUser.email) === 0;
+  }
+
+  deleteThisComment() {
+    this.deleteComment(this.comment._id);
+    this.removeComment(this.comment);
+  }
 }
 </script>
 
 <style scoped>
 .comment {
   display: flex;
-  justify-content: flex-start;
-  background-color: #efefef;
+  background-color: #fff;
   margin: 0.25em;
   align-items: center;
-  justify-content: flex-start;
+  width: -webkit-fill-available;
 }
 .comment-content {
   display: flex;
   flex-direction: column;
+  flex-grow: 2;
+  margin: 0.25em;
 }
 .comment-content-title {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  width: 15em;
+  width: --webkit-fill-available;
 }
 .small {
   font-size: x-small;
@@ -60,6 +78,28 @@ export default class Comment extends Vue {
 
 .comment-name {
   font-weight: bold;
+}
+
+.comment-content-text {
+  text-align: start;
+}
+
+.comment-btns {
+  display: flex;
+  margin: 0.2em;
+}
+
+.delete-comment {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1em;
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.delete-comment:hover .icon {
+  color: #ea5151;
 }
 
 </style>
