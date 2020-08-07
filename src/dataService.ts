@@ -1,22 +1,21 @@
 import http from "./http-common";
-import { board, card, comment } from "./board";
+import { board, card, comment, project } from "./board";
 
 class PlanningDataService {
-  async getAllBoardsForUser(token: string) {
-    const response = await http.get("http://localhost:3000/board", {
+  async getAllProjects(token: string) {
+    const response = await http.get(`http://localhost:3000/project`, {
       headers: {
         Authorization: `${token}`
       },
       withCredentials: true
     });
-    const boards: board[] = response.data;
-    console.log(boards);
-    return boards;
+    const projects: project[] = response.data;
+    return projects;
   }
-  async createBoard(newBoardName: string, token: string) {
+  async createBoard(newBoardName: string, projectId: string, token: string) {
     const response = await http.post(
       "http://localhost:3000/board",
-      { name: newBoardName },
+      { name: newBoardName, project: projectId },
       {
         headers: {
           Authorization: `${token}`
@@ -63,8 +62,21 @@ class PlanningDataService {
       }
     );
     const savedComment: comment = response.data;
-    console.log(savedComment);
     return savedComment;
+  }
+  async createProject(newProject: project, token: string) {
+    const response = await http.post(
+      "http://localhost:3000/project",
+      newProject,
+      {
+        headers: {
+          Authorization: `${token}`
+        },
+        withCredentials: true
+      }
+    );
+    const savedProject: project = response.data;
+    return savedProject;
   }
   async updateCard(newCard: card, token: string) {
     const response = await http.put(

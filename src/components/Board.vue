@@ -13,7 +13,7 @@
         :style="{ visibility: isBoardHovered ? 'visible' : 'hidden' }"
       />
     </div>
-    <Card v-for="card in board.cards" :card.sync="card" :key="card._id" />
+    <Card v-for="card in board.cards" :card="card" :key="card._id" />
     <div class="add-section">
       <div class="add-card-input" v-if="isNewCardInputVisible">
         <textarea
@@ -54,7 +54,6 @@ export default class Board extends Vue {
   @Action private createCard;
   @Action private deleteBoard;
   @Action private updateCard;
-  @Action private saveBoardsLocally;
   @Prop() private board!: board;
   @Mutation updateBoardWithCardIndex;
   @Mutation("removeBoard") removeBoardWithId;
@@ -78,7 +77,6 @@ export default class Board extends Vue {
   public removeBoard() {
     this.deleteBoard(this.board._id);
     this.removeBoardWithId(this.board._id);
-    this.saveBoardsLocally();
   }
 
   public addNewCardToBoard() {
@@ -93,7 +91,6 @@ export default class Board extends Vue {
       };
       this.createCard(newCard);
       this.newCardTitle = "";
-      this.saveBoardsLocally();
     }
   }
 
@@ -149,6 +146,9 @@ export default class Board extends Vue {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+.board:hover {
+  border-top: 10px solid #ea5151;
 }
 .board-title {
   display: flex;

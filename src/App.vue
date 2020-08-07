@@ -2,8 +2,11 @@
   <div id="app">
     <div class="columns">
       <div class="sidenav">
+        <div class="title">
+          <h1><small>Abilitare</small></h1>
+        </div>
         <div class="board-section">
-          <router-link to="/boards"><faIcon icon="th-large" class="icon" size="2x" /> <p>Boards</p></router-link>
+          <router-link to="/"><faIcon icon="th-large" class="icon" size="2x" /> <p>Projects</p></router-link>
         </div>
         <div class="calendar-section">
           <router-link to="/calendar"><faIcon icon="calendar-day" class="icon" size="2x" /> <p>Calendar</p></router-link>
@@ -32,7 +35,7 @@ import { Action, State, Mutation } from "vuex-class";
 
 @Component
 export default class App extends Vue {
-  @Action private getBoardsLocally;
+  @Action private getProjectsLocally;
   @State("myUser") storeMyUser: user;
   @Mutation setUser;
 
@@ -50,7 +53,7 @@ export default class App extends Vue {
         token: newUserData.token,
       };
       this.setUser(newUser);
-      this.getBoardsLocally();
+      this.getProjectsLocally();
     }
   }
 }
@@ -66,6 +69,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #000000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 98vh;
+  margin: 0.5em;
 }
 
 input[type="text"],
@@ -90,6 +98,8 @@ label {
 
 .columns {
   display: flex;
+  height: 98vh;
+  padding: 0.25em;
 }
 
 .content {
@@ -101,7 +111,14 @@ label {
   background-color: #ffffff;
   flex-direction: column;
   width: 10em;
-  justify-content: space-around;
+  justify-content: space-between;
+  margin: 0.25em;
+}
+
+.sidenav .title {
+  font-weight: 500;
+  font-family: "Kaushan Script", cursive;
+  color: #EA5151;
 }
 
 .sidenav a {

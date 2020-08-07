@@ -36,7 +36,6 @@ import { Action, Mutation, State } from "vuex-class";
 const ESC_KEY_CODE = 27;
 @Component
 export default class CardModal extends Vue {
-  @Action private saveBoardsLocally;
   @Action private updateCard;
   @Mutation setModalIsActive;
   @Mutation("removeCard") removeCardById;
@@ -46,7 +45,6 @@ export default class CardModal extends Vue {
   toggleModal() {
     this.setModalIsActive(!this.isActive);
     if (!this.isActive) {
-      this.saveBoardsLocally();
       this.updateCard(this.card);
     }
   }
@@ -54,14 +52,12 @@ export default class CardModal extends Vue {
   removeCard() {
     this.removeCardById(this.card._id);
     this.setModalIsActive(false);
-    this.saveBoardsLocally();
   }
 
   mounted() {
     window.addEventListener("keyup", e => {
       if (e.keyCode === ESC_KEY_CODE) {
         if (this.isActive) {
-          this.saveBoardsLocally();
           this.updateCard(this.card);
         }
         this.setModalIsActive(false);

@@ -39,7 +39,6 @@ import moment from "moment";
 
 @Component
 export default class Card extends Vue {
-  @Action private saveBoardsLocally;
   @Action private deleteCard;
   @Prop() card!: card;
   @Mutation setCommentsModalIsActive;
@@ -71,7 +70,6 @@ export default class Card extends Vue {
   removeCard() {
     this.deleteCard(this.card._id);
     this.removeCardById(this.card._id);
-    this.saveBoardsLocally();
   }
 
   public showDetail() {
@@ -91,7 +89,7 @@ export default class Card extends Vue {
   background-color: #fff;
   color: #000000;
   box-shadow: 3px 3px 6px #2e2d2d29;
-  border-radius: 10px;
+  border-radius: 20px;
   margin: 0.5em;
   display: flex;
   flex-direction: column;
@@ -165,7 +163,7 @@ export default class Card extends Vue {
 .picture img {
   width: 100%;
   height: 100%;
-  border-radius: 5px 5px 0 0;
+  border-radius: 20px 20px 0 0;
   object-fit: cover;
 }
 </style>

@@ -1,10 +1,13 @@
 import { MutationTree } from "vuex";
 import { PlanState } from "./index";
-import { board, card, user, comment } from "../board";
+import { board, card, comment, project, user } from "../board";
 
 export const mutations: MutationTree<PlanState> = {
   setBoards(state, boards: board[]) {
     state.boards = boards;
+  },
+  setProjects(state, projs: project[]) {
+    state.projects = projs;
   },
   setCommentsModalIsActive(state, isCommentModalActive: boolean) {
     state.commentsModalIsActive = isCommentModalActive;
@@ -14,6 +17,9 @@ export const mutations: MutationTree<PlanState> = {
   },
   setSelectedCard(state, newCard: card) {
     state.selectedCard = newCard;
+  },
+  setSelectedProject(state, proj: project) {
+    state.selectedProject = proj;
   },
   setUser(state, newUser: user) {
     state.myUser = newUser;

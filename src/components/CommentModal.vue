@@ -4,7 +4,7 @@
       <span class="close-button" @click="toggleModal">&times;</span>
       <h2>{{ card.title }}</h2>
 
-      <Comment v-for="comment in card.comments" :comment.sync="comment" :key="comment._id"/>
+      <Comment v-for="comment in card.comments" :comment="comment" :key="comment._id" />
 
       <div class="add-comment-input" v-if="isNewCommentInputVisible">
         <textarea
@@ -21,79 +21,71 @@
         </div>
       </div>
       <div v-else class="add-new-comment" @click="toggleNewCommentInput">
-        <faIcon icon="plus" class="icon" />
-        Add new comment
+        <faIcon icon="plus" class="icon" />Add new comment
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-  import Vue from "vue";
-  import { Component } from "vue-property-decorator";
-  import { card, comment, user } from "../board";
-  import { Action, Mutation, State } from "vuex-class";
-  import Comment from "./Comment.vue";
-  const ESC_KEY_CODE = 27;
+import Vue from "vue";
+import { Component } from "vue-property-decorator";
+import { card, user } from "../board";
+import { Action, Mutation, State } from "vuex-class";
+import Comment from "./Comment.vue";
+const ESC_KEY_CODE = 27;
 
-  @Component({
-    components: {
-      Comment
-    }
-  })
-  export default class CommentModal extends Vue {
-    @Action createComment;
-    @Action deleteComment;
-    @Action private saveBoardsLocally;
-    @Mutation setCommentsModalIsActive;
-    @State("myUser") storeMyUser: user;
-    @State("selectedCard") card!: card;
-    @State("commentsModalIsActive") isActive: boolean;
-    private isNewCommentInputVisible = false;
-    private newCommentContent = "";
+@Component({
+  components: {
+    Comment
+  }
+})
+export default class CommentModal extends Vue {
+  @Action createComment;
+  @Action deleteComment;
+  @Mutation setCommentsModalIsActive;
+  @State("myUser") storeMyUser: user;
+  @State("selectedCard") card!: card;
+  @State("commentsModalIsActive") isActive: boolean;
+  private isNewCommentInputVisible = false;
+  private newCommentContent = "";
 
-    public toggleNewCommentInput() {
-      this.isNewCommentInputVisible = !this.isNewCommentInputVisible;
-      if (this.isNewCommentInputVisible) {
-        this.$nextTick(() => {
-          (this.$refs.contextCommentArea as HTMLElement).focus();
-        });
-      }
-    }
-
-    toggleModal() {
-      this.setCommentsModalIsActive(!this.isActive);
-      if (!this.isActive) {
-        this.saveBoardsLocally();
-      }
-    }
-
-    addCommentToCard() {
-      if (this.newCommentContent !== "") {
-        const newComment = {
-          newComment: {
-            card: this.card._id,
-            content: this.newCommentContent.trim(),
-            createdOn: new Date(),
-          },
-          board: this.card.board
-        };
-        this.createComment(newComment);
-        this.newCommentContent = "";
-      }
-    }
-
-    mounted() {
-      window.addEventListener("keyup", e => {
-        if (e.keyCode === ESC_KEY_CODE) {
-          if (this.isActive) {
-            this.saveBoardsLocally();
-          }
-          this.setCommentsModalIsActive(false);
-        }
+  public toggleNewCommentInput() {
+    this.isNewCommentInputVisible = !this.isNewCommentInputVisible;
+    if (this.isNewCommentInputVisible) {
+      this.$nextTick(() => {
+        (this.$refs.contextCommentArea as HTMLElement).focus();
       });
     }
   }
+
+  toggleModal() {
+    this.setCommentsModalIsActive(!this.isActive);
+  }
+
+  addCommentToCard() {
+    if (this.newCommentContent !== "") {
+      const newComment = {
+        newComment: {
+          card: this.card._id,
+          content: this.newCommentContent.trim(),
+          createdOn: new Date()
+        },
+        board: this.card.board
+      };
+      this.createComment(newComment);
+      this.newCommentContent = "";
+    }
+  }
+
+  mounted() {
+    window.addEventListener("keyup", e => {
+      if (e.keyCode === ESC_KEY_CODE) {
+        this.setCommentsModalIsActive(false);
+      }
+    });
+  }
+}
 </script>
 
 <style>

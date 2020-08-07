@@ -1,5 +1,6 @@
 <template>
   <div id="home">
+    <h1 class="project-title">{{selectedProject.name}}</h1>
     <div class="flexbox">
       <Board v-for="board in boards" :board="board" :key="board._id" />
       <div class="add-board">
@@ -19,13 +20,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import Board from "./Board.vue";
 import CardModal from "./CardModal.vue";
 import CommentModal from "./CommentModal.vue";
-import { Action, Mutation, State } from "vuex-class";
-import { board, user } from "../board";
+import { Action, State } from "vuex-class";
+import { board, project } from "../board";
 
 @Component({
   components: {
@@ -36,21 +37,32 @@ import { board, user } from "../board";
 })
 export default class ProjectPage extends Vue {
   private newBoardName = "";
-  @Action private saveBoardsLocally;
   @Action private createBoard;
   @State boards: board[];
+  @State("selectedProject") storeSelectedProject: project;
 
   public addNewBoard() {
     if (this.newBoardName !== "") {
-      this.createBoard(this.newBoardName);
-      this.saveBoardsLocally();
+      this.createBoard({ name: this.newBoardName, project: this.storeSelectedProject._id});
       this.newBoardName = "";
     }
   }
+
+  get selectedProject() {
+    return this.storeSelectedProject;
+  }
+
 }
 </script>
 
 <style scoped>
+.project-title {
+  color: #ea5151;
+  font-size: xx-large;
+  font-weight: 500;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+}
+
 .flexbox {
   display: flex;
   flex-direction: row;
@@ -62,6 +74,6 @@ export default class ProjectPage extends Vue {
   align-self: start;
 }
 .icon:hover {
-  color: #3f87ce;
+  color: #ea5151;
 }
 </style>
