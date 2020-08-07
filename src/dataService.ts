@@ -3,7 +3,7 @@ import { board, card, comment, project } from "./board";
 
 class PlanningDataService {
   async getAllProjects(token: string) {
-    const response = await http.get(`http://localhost:3000/project`, {
+    const response = await http.get(`/project`, {
       headers: {
         Authorization: `${token}`
       },
@@ -14,7 +14,7 @@ class PlanningDataService {
   }
   async createBoard(newBoardName: string, projectId: string, token: string) {
     const response = await http.post(
-      "http://localhost:3000/board",
+      "/board",
       { name: newBoardName, project: projectId },
       {
         headers: {
@@ -28,7 +28,7 @@ class PlanningDataService {
   }
   async deleteBoard(boardId: string, token: string) {
     const response = await http.delete(
-      "http://localhost:3000/board/" + boardId,
+      "/board/" + boardId,
       {
         headers: {
           Authorization: `${token}`
@@ -40,7 +40,7 @@ class PlanningDataService {
     return deletedBoard;
   }
   async createCard(newCard: card, token: string) {
-    const response = await http.post("http://localhost:3000/card", newCard, {
+    const response = await http.post("/card", newCard, {
       headers: {
         Authorization: `${token}`
       },
@@ -52,7 +52,7 @@ class PlanningDataService {
 
   async createComment(newComment: comment, token: string) {
     const response = await http.post(
-      "http://localhost:3000/comment",
+      "/comment",
       newComment,
       {
         headers: {
@@ -66,7 +66,7 @@ class PlanningDataService {
   }
   async createProject(newProject: project, token: string) {
     const response = await http.post(
-      "http://localhost:3000/project",
+      "/project",
       newProject,
       {
         headers: {
@@ -80,7 +80,7 @@ class PlanningDataService {
   }
   async updateCard(newCard: card, token: string) {
     const response = await http.put(
-      `http://localhost:3000/card/${newCard._id}`,
+      `/card/${newCard._id}`,
       newCard,
       {
         headers: {
@@ -93,7 +93,7 @@ class PlanningDataService {
     return updateCard;
   }
   async deleteCard(cardId: string, token: string) {
-    const response = await http.delete(`http://localhost:3000/card/${cardId}`, {
+    const response = await http.delete(`/card/${cardId}`, {
       headers: {
         Authorization: `${token}`
       },
@@ -104,7 +104,7 @@ class PlanningDataService {
   }
   async deleteComment(commentId: string, token: string) {
     const response = await http.delete(
-      `http://localhost:3000/comment/${commentId}`,
+      `/comment/${commentId}`,
       {
         headers: {
           Authorization: `${token}`

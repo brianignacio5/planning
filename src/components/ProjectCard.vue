@@ -58,4 +58,12 @@ export default class ProjectCard extends Vue {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   margin: 0.25em;
 }
+
+.project-date {
+  font-size: small;
+}
+
+.project-description {
+  margin: 1.5em;
+}
 </style>
