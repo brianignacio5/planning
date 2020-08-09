@@ -1,22 +1,37 @@
 <template>
-  <div class="project-card" @click="selectProject">
-    <span class="project-name">{{ project.name }}</span>
+  <div class="project-card" @click="toggleCardEdit">
+    <span class="project-name" @click="selectProject">{{ project.name }}</span>
     <span class="project-date">{{ cardDate }}</span>
-    <span class="project-description">{{ project.description }}</span>
+    <p v-show="!cardEdit">{{ project.description }}</p>
+    <input
+      type="text"
+      name="project-inline-description"
+      :id="projectDescription"
+      v-model="project.description"
+      v-show="cardEdit"
+      @blur="saveCard"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { Mutation } from "vuex-class";
+import { Action, Mutation } from "vuex-class";
 import { project } from "../board";
 import moment from "moment";
 
 @Component
 export default class ProjectCard extends Vue {
+  @Action private updateProject;
   @Prop() project!: project;
   @Mutation setSelectedProject;
   @Mutation setBoards;
+  private cardEdit = false;
+
+  get projectDescription() {
+    return this.project._id + "-desc";
+  }
+
   get cardDate() {
     if (this.project.createdOn) {
       const formattedDate = moment(this.project.createdOn.toString()).format(
@@ -27,10 +42,27 @@ export default class ProjectCard extends Vue {
     return "";
   }
   public selectProject() {
-      this.setBoards(this.project.boards);
-      this.setSelectedProject(this.project);
-      this.$router.push({ path: "/project" });
+    this.setBoards(this.project.boards);
+    this.setSelectedProject(this.project);
+    this.$router.push({ path: "/project" });
+  }
+
+  public toggleCardEdit() {
+    this.cardEdit = !this.cardEdit;
+    if (this.cardEdit) {
+      this.$nextTick(() => {
+        const projDescElem = document.getElementById(this.projectDescription);
+        if (projDescElem) {
+          projDescElem.focus();
+        }
+      });
     }
+  }
+
+  public saveCard() {
+    this.updateProject(this.project);
+    this.toggleCardEdit();
+  }
 }
 </script>
 
@@ -39,16 +71,18 @@ export default class ProjectCard extends Vue {
   background-color: #fff;
   color: #000000;
   box-shadow: 3px 3px 6px #2e2d2d29;
-  border-radius: 20px;
+  border-radius: 10px;
   margin: 0.5em;
   display: flex;
   flex-direction: column;
   justify-items: center;
   width: 320px;
+  transition: all 0.1s ease;
 }
 
 .project-card:hover {
-  border-left: 10px solid #ea5151;
+  border-left: 2px solid #ea5151;
+  border-top: 2px solid #ea5151;
 }
 
 .project-name {
@@ -57,6 +91,10 @@ export default class ProjectCard extends Vue {
   font-weight: 500;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   margin: 0.25em;
+}
+
+.project-name:hover {
+  text-decoration-line: underline;
 }
 
 .project-date {

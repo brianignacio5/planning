@@ -47,8 +47,8 @@ const ESC_KEY_CODE = 27;
 
 @Component({
   components: {
-    Card
-  }
+    Card,
+  },
 })
 export default class Board extends Vue {
   @Action private createCard;
@@ -96,7 +96,7 @@ export default class Board extends Vue {
 
   public drop(e) {
     const cardId = e.dataTransfer.getData("card_id");
-    console.log(cardId);    
+    console.log(cardId);
     const dropYPosition = e.pageY;
     let isBoardUpdated = false;
     for (let i = 0; i < this.board.cards.length; i++) {
@@ -109,24 +109,28 @@ export default class Board extends Vue {
         this.updateBoardWithCardIndex({
           cardId,
           destBoardId: this.board._id,
-          destIndex: i
+          destIndex: i,
         });
         isBoardUpdated = true;
         break;
       }
     }
     if (!isBoardUpdated) {
-      this.updateCard({ _id: cardId, board: this.board, insertIndex: this.board.cards.length });
+      this.updateCard({
+        _id: cardId,
+        board: this.board,
+        insertIndex: this.board.cards.length
+      });
       this.updateBoardWithCardIndex({
         cardId,
         destBoardId: this.board._id,
-        destIndex: this.board.cards.length
+        destIndex: this.board.cards.length,
       });
     }
   }
 
   mounted() {
-    window.addEventListener("keyup", e => {
+    window.addEventListener("keyup", (e) => {
       if (e.keyCode === ESC_KEY_CODE) {
         this.isNewCardInputVisible = false;
       }
@@ -137,7 +141,7 @@ export default class Board extends Vue {
 
 <style scoped>
 .board {
-  background: #BEBEBE 0% 0% no-repeat padding-box;
+  background: #bebebe 0% 0% no-repeat padding-box;
   color: #000000;
   width: 340px;
   height: fit-content;
@@ -146,6 +150,7 @@ export default class Board extends Vue {
   display: flex;
   flex-direction: column;
   align-items: center;
+  transition: all 0.1s ease;
 }
 .board:hover {
   border-top: 10px solid #ea5151;
@@ -189,14 +194,14 @@ export default class Board extends Vue {
 }
 
 .add-new-card:hover {
-  border: 0.25em solid #EA5151;
-  color: #EA5151;
+  border: 0.25em solid #ea5151;
+  color: #ea5151;
 }
 
 .icon {
   margin-right: 0.5em;
 }
 .icon:hover {
-  color: #EA5151;
+  color: #ea5151;
 }
 </style>

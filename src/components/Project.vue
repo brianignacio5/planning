@@ -1,6 +1,6 @@
 <template>
   <div id="home">
-    <h1 class="project-title">{{selectedProject.name}}</h1>
+    <h1 class="project-title">{{ selectedProject.name }}</h1>
     <div class="flexbox">
       <Board v-for="board in boards" :board="board" :key="board._id" />
       <div class="add-board">
@@ -32,8 +32,8 @@ import { board, project } from "../board";
   components: {
     Board,
     CardModal,
-    CommentModal
-  }
+    CommentModal,
+  },
 })
 export default class ProjectPage extends Vue {
   private newBoardName = "";
@@ -43,7 +43,10 @@ export default class ProjectPage extends Vue {
 
   public addNewBoard() {
     if (this.newBoardName !== "") {
-      this.createBoard({ name: this.newBoardName, project: this.storeSelectedProject._id});
+      this.createBoard({
+        name: this.newBoardName,
+        project: this.storeSelectedProject._id,
+      });
       this.newBoardName = "";
     }
   }
@@ -51,7 +54,6 @@ export default class ProjectPage extends Vue {
   get selectedProject() {
     return this.storeSelectedProject;
   }
-
 }
 </script>
 
@@ -59,7 +61,7 @@ export default class ProjectPage extends Vue {
 .project-title {
   color: #ea5151;
   font-size: xx-large;
-  font-weight: 500;
+  font-weight: 800;
   font-family: Avenir, Helvetica, Arial, sans-serif;
 }
 

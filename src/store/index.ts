@@ -172,6 +172,16 @@ export const actions: ActionTree<PlanState, any> = {
       console.log(error);
     }
   },
+  async updateProject(context, modifiedProject: project) {
+    try {
+      const resultProject = await PlanningDataService.updateProject(
+        modifiedProject,
+        context.state.myUser.token
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  },
   saveBoardsLocally(context) {
     const parsedBoards = JSON.stringify(context.state.boards);
     localStorage.setItem("boards", parsedBoards);

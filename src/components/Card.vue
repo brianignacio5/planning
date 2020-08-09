@@ -12,14 +12,20 @@
       <img :src="card.picture" alt="card-picture" />
     </div>
     <div class="card-content">
-      <div class="main-card" @click="showComments">
-        <div class="small-card-title">
-          <span>
-            {{ card.title }}
-          </span>
+      <div class="main-card">
+        <div class="small-card-title" @click="toggleCardEdit">
+          <span @click="showComments">{{ card.title }}</span>
           <div>{{ cardDate }}</div>
         </div>
-        <p>{{ card.description }}</p>
+        <p v-show="!cardEdit">{{ card.description }}</p>
+        <input
+          type="text"
+          name="description"
+          :id="cardDescription"
+          v-model="card.description"
+          v-show="cardEdit"
+          @blur="saveCard"
+        />
       </div>
       <div class="edit-card" v-if="isCardHovered" @click="showDetail">
         <faIcon icon="edit" class="icon" />
@@ -40,15 +46,38 @@ import moment from "moment";
 @Component
 export default class Card extends Vue {
   @Action private deleteCard;
+  @Action private updateCard;
   @Prop() card!: card;
   @Mutation setCommentsModalIsActive;
   @Mutation setModalIsActive;
   @Mutation setSelectedCard;
   @Mutation("removeCard") removeCardById;
   private isCardHovered = false;
+  private cardEdit = false;
+
+  get cardDescription() {
+    return this.card._id + "-desc";
+  }
 
   public toggleCardHover() {
     this.isCardHovered = !this.isCardHovered;
+  }
+
+  public toggleCardEdit() {
+    this.cardEdit = !this.cardEdit;
+    if (this.cardEdit) {
+      this.$nextTick(() => {
+        const cardDescElem = document.getElementById(this.cardDescription);
+        if (cardDescElem) {
+          cardDescElem.focus();
+        }
+      });
+    }
+  }
+
+  public saveCard() {
+    this.updateCard(this.card);
+    this.toggleCardEdit();
   }
 
   public dragStart(e) {
@@ -89,7 +118,7 @@ export default class Card extends Vue {
   background-color: #fff;
   color: #000000;
   box-shadow: 3px 3px 6px #2e2d2d29;
-  border-radius: 20px;
+  border-radius: 15px;
   margin: 0.5em;
   display: flex;
   flex-direction: column;
@@ -117,15 +146,25 @@ export default class Card extends Vue {
   display: flex;
   flex-direction: column;
   margin: 10px 0 5px 15px;
+  width: 95%;
 }
 .small-card-title span {
   font-weight: bold;
   font-size: x-large;
+  align-self: flex-start;
+}
+
+.small-card-title span:hover {
+  color: #ea5151;
 }
 
 .small-card-title div {
   font-size: x-small;
   text-align: left;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  align-self: flex-start;
 }
 
 .icon {
@@ -163,7 +202,7 @@ export default class Card extends Vue {
 .picture img {
   width: 100%;
   height: 100%;
-  border-radius: 20px 20px 0 0;
+  border-radius: 15px 15px 0 0;
   object-fit: cover;
 }
 </style>

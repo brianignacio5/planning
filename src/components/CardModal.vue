@@ -3,12 +3,7 @@
     <div class="modal-content">
       <span class="close-button" @click="toggleModal">&times;</span>
       <label for="card-title">Title</label>
-      <input
-        type="text"
-        name="title"
-        id="card-title"
-        v-model="card.title"
-      />
+      <input type="text" name="title" id="card-title" v-model="card.title" />
       <label for="card-description">Description</label>
       <input
         type="text"
@@ -55,7 +50,7 @@ export default class CardModal extends Vue {
   }
 
   mounted() {
-    window.addEventListener("keyup", e => {
+    window.addEventListener("keyup", (e) => {
       if (e.keyCode === ESC_KEY_CODE) {
         if (this.isActive) {
           this.updateCard(this.card);
