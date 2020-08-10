@@ -1,5 +1,5 @@
 import http from "./http-common";
-import { board, card, comment, project } from "./board";
+import { board, card, comment, project, user, userInfo } from "./board";
 
 class PlanningDataService {
   async getAllProjects(token: string) {
@@ -114,6 +114,20 @@ class PlanningDataService {
     });
     const updatedProject: project = response.data;
     return updatedProject;
+  }
+
+  async updateUserInfo(userInfo: userInfo, token: string) {
+    const response = await http.put("/auth/user", userInfo, {
+      headers: {
+        Authorization: `${token}`
+      },
+      withCredentials: true
+    });
+    if (response.data.error) {
+      throw new Error(response.data.error);
+    }
+    const updatedUser: user = response.data;
+    return updatedUser;
   }
 }
 

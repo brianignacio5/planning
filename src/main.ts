@@ -8,6 +8,7 @@ import vueCookies from "vue-cookies";
 import VueRouter from "vue-router";
 import ProjectPage from "./components/Project.vue";
 import Projects from "./components/Projects.vue";
+import Settings from "./components/Settings.vue";
 
 library.add(faCalendarDay, faCog, faEdit, faPlus, faTimes, faThLarge);
 Vue.component("faIcon", FontAwesomeIcon);
@@ -17,6 +18,7 @@ const router = new VueRouter({
   routes: [
     { name: "home", path: "/", component: Projects },
     { name: "project", path: "/project", component: ProjectPage },
+    { name: "settings", path: "/settings", component: Settings }
   ]
 });
 
