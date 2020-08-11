@@ -88,6 +88,7 @@ export default class Board extends Vue {
         description: "",
         picture: "",
         createdOn: new Date(),
+        dueOn: new Date()
       };
       this.createCard(newCard);
       this.newCardTitle = "";

@@ -7,6 +7,12 @@
         </div>
         <div class="sidenav-section">
           <router-link to="/"
+            ><faIcon icon="users" class="icon" size="2x" />
+            <p>Teams</p></router-link
+          >
+        </div>
+        <div class="sidenav-section">
+          <router-link to="/"
             ><faIcon icon="th-large" class="icon" size="2x" />
             <p>Projects</p></router-link
           >

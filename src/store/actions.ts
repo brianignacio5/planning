@@ -1,7 +1,7 @@
 import { ActionTree } from "vuex";
 import PlanningDataService from "../dataService";
 import { PlanState } from "./index";
-import { card, comment, project, user, userInfo } from "../board"; 
+import { card, comment, project, user, userInfo } from "../board";
 
 export const actions: ActionTree<PlanState, any> = {
   async getProjectsLocally(context) {
@@ -21,6 +21,16 @@ export const actions: ActionTree<PlanState, any> = {
         console.log(error);
         localStorage.removeItem("projects");
       }
+    }
+  },
+  async getCardsByUser(context) {
+    try {
+      const cardsByUser = await PlanningDataService.getAllCardsOfUser(
+        context.state.myUser.token
+      );
+      context.commit("setCardsByUser", cardsByUser);
+    } catch (error) {
+      console.log(error);
     }
   },
   async createBoard(context, payload: { name: string; project: string }) {
@@ -151,11 +161,13 @@ export const actions: ActionTree<PlanState, any> = {
         email: resultUser.email,
         name: resultUser.name,
         picture: resultUser.picture,
-        token: context.state.myUser.token
-      }
+        token: context.state.myUser.token,
+      };
       this.commit("setUser", newUser);
     } catch (error) {
-      const msg = error.message ? error.message : "Error at updating user information";
+      const msg = error.message
+        ? error.message
+        : "Error at updating user information";
       this.commit("setSettingsError", error.message);
       console.log(error);
     }

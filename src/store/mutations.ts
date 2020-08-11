@@ -9,6 +9,9 @@ export const mutations: MutationTree<PlanState> = {
   setBoards(state, boards: board[]) {
     state.boards = boards;
   },
+  setCardsByUser(state, cardsByUser: card[]) {
+    state.userCards = cardsByUser;
+  },
   setProjects(state, projs: project[]) {
     state.projects = projs;
   },

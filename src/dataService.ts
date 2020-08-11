@@ -13,6 +13,17 @@ class PlanningDataService {
     return projects;
   }
 
+  async getAllCardsOfUser(token: string) {
+    const response = await http.get("/card/user" , {
+      headers: {
+        Authorization: `${token}`
+      },
+      withCredentials: true,
+    });
+    const cards: card[] = response.data;
+    return cards;
+  }
+
   async createBoard(newBoardName: string, projectId: string, token: string) {
     const response = await http.post(
       "/board",

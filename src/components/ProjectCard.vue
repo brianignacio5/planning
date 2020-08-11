@@ -81,8 +81,7 @@ export default class ProjectCard extends Vue {
 }
 
 .project-card:hover {
-  border-left: 2px solid #ea5151;
-  border-top: 2px solid #ea5151;
+  border-top: 5px solid #ea5151;
 }
 
 .project-name {

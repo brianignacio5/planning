@@ -14,6 +14,7 @@ export interface PlanState {
   selectedCard: card;
   selectedProject: project;
   settingsError: string[];
+  userCards: card[];
 }
 
 export const planningState: PlanState = {
@@ -28,10 +29,17 @@ export const planningState: PlanState = {
   },
   projects: [],
   selectedCard: {
+    assignee: {
+      token: "madsStrings",
+      name: "Mads Nielsen",
+      email: "me@mail.com",
+      picture: "./profile.png",
+    },
     board: "",
     comments: [],
     createdOn: new Date(),
     description: "",
+    dueOn: new Date(),
     _id: "",
     picture: "",
     title: "",
@@ -45,6 +53,7 @@ export const planningState: PlanState = {
     _id: ""
   },
   settingsError: [],
+  userCards: []
 };
 
 export default new Vuex.Store({

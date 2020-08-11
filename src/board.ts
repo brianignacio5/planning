@@ -6,13 +6,15 @@ export interface board {
 }
 
 export interface card {
+  assignee: user;
   board: string;
   comments: comment[];
+  createdOn: Date;
   description: string;
+  dueOn: Date;
   _id: string;
   picture: string;
   title: string;
-  createdOn: Date;
 }
 
 export interface comment {

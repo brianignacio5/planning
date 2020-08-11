@@ -18,6 +18,14 @@
         id="picture-url"
         v-model="card.picture"
       />
+      <label for="assigne">Assignee</label>
+      <select name="assignee" v-model="card.assignee">
+        <option v-for="user in projectUsers" :value="user._id" :key="user.email">
+          {{ user.name}} - {{user.email}} -
+        </option>
+      </select>
+      <label for="dueOn">Due on:</label>
+      <DatePicker v-model="card.dueOn" class="centerize"/>
       <button class="delete-btn" @click="removeCard">Delete card</button>
     </div>
   </div>
@@ -26,15 +34,21 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import { card } from "../board";
+import { card, project } from "../board";
 import { Action, Mutation, State } from "vuex-class";
+import DatePicker from "vuejs-datepicker";
 const ESC_KEY_CODE = 27;
-@Component
+@Component({
+  components: {
+    DatePicker
+  }
+})
 export default class CardModal extends Vue {
   @Action private updateCard;
   @Mutation setModalIsActive;
   @Mutation("removeCard") removeCardById;
   @State("selectedCard") card!: card;
+  @State("selectedProject") storeSelectedProject!: project;
   @State("modalIsActive") isActive: boolean;
 
   toggleModal() {
@@ -42,6 +56,10 @@ export default class CardModal extends Vue {
     if (!this.isActive) {
       this.updateCard(this.card);
     }
+  }
+
+  get projectUsers() {
+    return this.storeSelectedProject.users;
   }
 
   removeCard() {
@@ -87,6 +105,10 @@ export default class CardModal extends Vue {
   border-radius: 0.5em;
   display: flex;
   flex-direction: column;
+}
+
+.centerize {
+  align-self: center;
 }
 
 .close-button {
