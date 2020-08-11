@@ -3,6 +3,9 @@ import { PlanState } from "./index";
 import { board, card, comment, project, user } from "../board";
 
 export const mutations: MutationTree<PlanState> = {
+  clearSettingsError(state) {
+    state.settingsError = [];
+  },
   setBoards(state, boards: board[]) {
     state.boards = boards;
   },
@@ -20,6 +23,9 @@ export const mutations: MutationTree<PlanState> = {
   },
   setSelectedProject(state, proj: project) {
     state.selectedProject = proj;
+  },
+  setSettingsError(state, error: string) {
+    state.settingsError.push(error);
   },
   setUser(state, newUser: user) {
     state.myUser = newUser;

@@ -38,3 +38,13 @@ export interface user {
   picture: string;
   token: string;
 }
+
+export interface userInfo {
+  email?: string;
+  name?: string;
+  password?: string;
+  picture?: string;
+  oldPassword?: string;
+  newPassword?: string;
+  newNewPassword?: string;
+}
