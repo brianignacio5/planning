@@ -3,10 +3,12 @@
     <div class="columns">
       <div class="sidenav">
         <div class="title">
-          <h1><small>Abilitare</small></h1>
+          <router-link to="/">
+            <h1><small>Abilitare</small></h1>
+          </router-link>
         </div>
         <div class="sidenav-section">
-          <router-link to="/"
+          <router-link to="/teams"
             ><faIcon icon="users" class="icon" size="2x" />
             <p>Teams</p></router-link
           >

@@ -66,7 +66,7 @@ export default class ProjectCard extends Vue {
 }
 </script>
 
-<style scoped>
+<style>
 .project-card {
   background-color: #fff;
   color: #000000;

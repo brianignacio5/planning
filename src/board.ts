@@ -35,6 +35,7 @@ export interface project {
 }
 
 export interface user {
+  _id?: string;
   email: string;
   name: string;
   picture: string;
