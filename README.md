@@ -1,6 +1,6 @@
 # Abilitare planning-app
 
-<img src="./assets/Abilitare.gif" width=25% height=25% alt="Abilitare">
+<p align="center"><img src="./assets/Abilitare.gif" width=50% height=50% alt="Abilitare"></p>
 
 This project is a Trello-inspired project management tool. You can make a project and create different boards which contains cards. 
 
