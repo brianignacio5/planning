@@ -1,19 +1,27 @@
-# planning-app
+# Abilitare planning-app
 
-This project is an attempt to make a Trello-like task management app.
+<img src="./assets/Abilitare.gif" width=25% height=25% alt="Abilitare">
 
-Using Vue, Vuex, MongoDB (probably) and Express for backend.
+This project is a Trello-inspired project management tool. You can make a project and create different boards which contains cards. 
 
-To-do
+A card can be considered a task since it has due date, description and title.
+A board can contain many cards, and you can drag and drop a card from a board to another.
 
-1. Add user OAuth
-2. Add comments system for tasks modal window
+## Pages
 
-API Definition
-/:project
-GET boards for a given project.
-POST add new project.
-DELETE remove project
+* Teams: Allow you to add a user a given project showing you existing users in the project.
+* Projects: Allows you to navigate for all your project and when you select a project, you can see all boards and cards in it.
+* Calendar: Show all the cards with due date for the selected date.
+* Settings: Allows you to modify user password and other user information.
+
+## Features 
+
+* Drag and drop functionality for cards.
+* Form validation for settings page.
+* Using JWT token for authorized backend request
+* Cards design, edit and delete transitions.
+* Implements a data service to communicate with the backend using axios. See the [planning backend project](https://github.com/brianignacio5/planning-backend).
+* Handle state using vuex.
 
 ## Project setup
 ```

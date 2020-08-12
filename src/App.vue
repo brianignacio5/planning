@@ -133,6 +133,14 @@ label {
   margin: 0.25em;
 }
 
+.sidenav .title a {
+  color: #ea5151;
+}
+
+.sidenav .title a:hover {
+  text-shadow: 1px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
 .sidenav-section {
   display: flex;
   flex-direction: column;

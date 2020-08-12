@@ -68,7 +68,7 @@ export default class Calendar extends Vue {
 }
 
 .task-list {
-  width: 107vh;
+  width: 90%;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
