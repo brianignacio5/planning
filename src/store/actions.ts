@@ -41,6 +41,7 @@ export const actions: ActionTree<PlanState, any> = {
         context.state.myUser.token
       );
       context.state.boards.push(savedBoard);
+      this.dispatch("saveBoardsLocally");
     } catch (error) {
       console.log(error);
     }
