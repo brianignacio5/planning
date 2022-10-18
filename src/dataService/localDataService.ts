@@ -15,6 +15,11 @@ class LocalDataService implements AbstractDataService {
     }
   }
 
+  saveProjectsLocally(projects: project[]) {
+    const parsedProjects = JSON.stringify(projects);
+    localStorage.setItem("projects", parsedProjects);
+  }
+
   async getAllCardsOfUser(user: user): Promise<card[]> {
     const localUserCards = localStorage.getItem("cards");
     if (localUserCards) {
@@ -33,12 +38,20 @@ class LocalDataService implements AbstractDataService {
     projectId: string,
     user: user
   ): Promise<board> {
+    const localProjects = await this.getAllProjects(user);
+    if (!localProjects) {
+      return;
+    }
+    const boardId = localProjects[projectId].boards.length;
     const newBoard: board = {
       name: newBoardName,
       user,
-      cards: []
+      cards: [],
+      _id: boardId.toString(),
+      project: projectId
     } as board;
-
+    localProjects[projectId].boards.push(newBoard);
+    this.saveProjectsLocally(localProjects);
     return newBoard;
   }
 
@@ -51,18 +64,28 @@ class LocalDataService implements AbstractDataService {
   }
 
   async createProject(newProject: project, user: user): Promise<project> {
+    const localProjects = await this.getAllProjects(user);
+    newProject._id = localProjects ? localProjects.length.toString(): "0";
+    newProject.boards = [];
     return newProject;
   }
 
-  async deleteBoard(boardId: string, user: user): Promise<board> {
-    return {} as board;
+  async deleteBoard(board: board, user: user): Promise<board> {
+    const localProjects = await this.getAllProjects(user);
+    if (!localProjects) {
+      return;
+    }
+    const boardId = localProjects[board.project].boards.findIndex((b) => b._id === board._id);
+    const deletedBoard = localProjects[board.project].boards.splice(boardId, 1);
+    this.saveProjectsLocally(localProjects);
+    return deletedBoard as board;
   }
 
-  async deleteCard(cardId: string, user: user): Promise<card> {
+  async deleteCard(card: card, user: user): Promise<card> {
     return {} as card;
   }
 
-  async deleteComment(commentId: string, user: user): Promise<comment> {
+  async deleteComment(comment: comment, user: user): Promise<comment> {
     return {} as comment;
   }
 
@@ -71,7 +94,13 @@ class LocalDataService implements AbstractDataService {
   }
 
   async updateProject(newProject: project, user: user): Promise<project> {
-    return {} as project;
+    const localProjects = await this.getAllProjects(user);
+    if (localProjects) {
+      const projIndex = localProjects.findIndex((p) => p._id === newProject._id);
+      localProjects.splice(projIndex, 1, newProject);
+      this.saveProjectsLocally(localProjects);
+    }
+    return newProject;
   }
 
   async updateUserInfo(userInfo: userInfo, user: user): Promise<user> {

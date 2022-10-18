@@ -73,8 +73,8 @@ class PlanningDataService implements AbstractDataService {
     return savedProject;
   }
 
-  async deleteBoard(boardId: string, user: user) {
-    const response = await http.delete("/board/" + boardId, {
+  async deleteBoard(board: board, user: user) {
+    const response = await http.delete("/board/" + board._id, {
       headers: {
         Authorization: `${user.token}`,
       },
@@ -84,8 +84,8 @@ class PlanningDataService implements AbstractDataService {
     return deletedBoard;
   }
 
-  async deleteCard(cardId: string, user: user) {
-    const response = await http.delete(`/card/${cardId}`, {
+  async deleteCard(card: card, user: user) {
+    const response = await http.delete(`/card/${card._id}`, {
       headers: {
         Authorization: `${user.token}`,
       },
@@ -95,8 +95,8 @@ class PlanningDataService implements AbstractDataService {
     return deletedCard;
   }
 
-  async deleteComment(commentId: string, user: user) {
-    const response = await http.delete(`/comment/${commentId}`, {
+  async deleteComment(comment: comment, user: user) {
+    const response = await http.delete(`/comment/${comment._id}`, {
       headers: {
         Authorization: `${user.token}`,
       },

@@ -2,6 +2,7 @@ export interface board {
   _id: string;
   name: string;
   user: user;
+  project: string;
   cards: card[];
 }
 

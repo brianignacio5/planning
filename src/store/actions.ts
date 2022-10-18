@@ -1,12 +1,12 @@
 import { ActionTree } from "vuex";
-import PlanningDataService from "../dataService";
+import { dataService } from "../dataService";
 import { PlanState } from "./index";
-import { card, comment, project, user, userInfo } from "../board";
+import { board, card, comment, project, user, userInfo } from "../board";
 
 export const actions: ActionTree<PlanState, any> = {
   async getProjectsLocally(context) {
-    const onlineProjects = await PlanningDataService.getAllProjects(
-      context.state.myUser.token
+    const onlineProjects = await dataService.getAllProjects(
+      context.state.myUser
     );
     if (onlineProjects) {
       context.commit("setProjects", onlineProjects);
@@ -25,8 +25,8 @@ export const actions: ActionTree<PlanState, any> = {
   },
   async getCardsByUser(context) {
     try {
-      const cardsByUser = await PlanningDataService.getAllCardsOfUser(
-        context.state.myUser.token
+      const cardsByUser = await dataService.getAllCardsOfUser(
+        context.state.myUser
       );
       context.commit("setCardsByUser", cardsByUser);
     } catch (error) {
@@ -35,22 +35,22 @@ export const actions: ActionTree<PlanState, any> = {
   },
   async createBoard(context, payload: { name: string; project: string }) {
     try {
-      const savedBoard = await PlanningDataService.createBoard(
+      const savedBoard = await dataService.createBoard(
         payload.name,
         payload.project,
-        context.state.myUser.token
+        context.state.myUser
       );
       context.state.boards.push(savedBoard);
-      this.dispatch("saveBoardsLocally");
+      this.dispatch("saveProjectsLocally");
     } catch (error) {
       console.log(error);
     }
   },
   async createCard(context, newCard: card) {
     try {
-      const savedCard = await PlanningDataService.createCard(
+      const savedCard = await dataService.createCard(
         newCard,
-        context.state.myUser.token
+        context.state.myUser
       );
       for (let i = 0; i < context.state.boards.length; i++) {
         const board = context.state.boards[i];
@@ -69,9 +69,9 @@ export const actions: ActionTree<PlanState, any> = {
     payload: { newComment: comment; board: string }
   ) {
     try {
-      const savedComment = await PlanningDataService.createComment(
+      const savedComment = await dataService.createComment(
         payload.newComment,
-        context.state.myUser.token
+        context.state.myUser
       );
       for (let i = 0; i < context.state.boards.length; i++) {
         if (context.state.boards[i]._id === payload.board) {
@@ -92,40 +92,41 @@ export const actions: ActionTree<PlanState, any> = {
   },
   async createProject(context, newProject: project) {
     try {
-      const savedProject = await PlanningDataService.createProject(
+      const savedProject = await dataService.createProject(
         newProject,
-        context.state.myUser.token
+        context.state.myUser
       );
       context.state.projects.push(savedProject);
+      this.dispatch("saveProjectsLocally");
     } catch (error) {
       console.log(error);
     }
   },
-  async deleteBoard(context, boardId: string) {
+  async deleteBoard(context, board: board) {
     try {
-      const resultBoard = await PlanningDataService.deleteBoard(
-        boardId,
-        context.state.myUser.token
+      const resultBoard = await dataService.deleteBoard(
+        board,
+        context.state.myUser
       );
     } catch (error) {
       console.log(error);
     }
   },
-  async deleteCard(context, cardId: string) {
+  async deleteCard(context, card: card) {
     try {
-      const resultCard = await PlanningDataService.deleteCard(
-        cardId,
-        context.state.myUser.token
+      const resultCard = await dataService.deleteCard(
+        card,
+        context.state.myUser
       );
     } catch (error) {
       console.log(error);
     }
   },
-  async deleteComment(context, commentId: string) {
+  async deleteComment(context, comment: comment) {
     try {
-      const resultComment = await PlanningDataService.deleteComment(
-        commentId,
-        context.state.myUser.token
+      const resultComment = await dataService.deleteComment(
+        comment,
+        context.state.myUser
       );
     } catch (error) {
       console.log(error);
@@ -133,9 +134,9 @@ export const actions: ActionTree<PlanState, any> = {
   },
   async updateCard(context, modifiedCard: card) {
     try {
-      const resultCard = await PlanningDataService.updateCard(
+      const resultCard = await dataService.updateCard(
         modifiedCard,
-        context.state.myUser.token
+        context.state.myUser
       );
     } catch (error) {
       console.log(error);
@@ -143,9 +144,9 @@ export const actions: ActionTree<PlanState, any> = {
   },
   async updateProject(context, modifiedProject: project) {
     try {
-      const resultProject = await PlanningDataService.updateProject(
+      const resultProject = await dataService.updateProject(
         modifiedProject,
-        context.state.myUser.token
+        context.state.myUser
       );
     } catch (error) {
       console.log(error);
@@ -153,9 +154,9 @@ export const actions: ActionTree<PlanState, any> = {
   },
   async updateUserInfo(context, userInfo: userInfo) {
     try {
-      const resultUser = await PlanningDataService.updateUserInfo(
+      const resultUser = await dataService.updateUserInfo(
         userInfo,
-        context.state.myUser.token
+        context.state.myUser
       );
       console.log(resultUser);
       const newUser: user = {
@@ -176,5 +177,9 @@ export const actions: ActionTree<PlanState, any> = {
   saveBoardsLocally(context) {
     const parsedBoards = JSON.stringify(context.state.boards);
     localStorage.setItem("boards", parsedBoards);
+  },
+  saveProjectsLocally(context) {
+    const parsedProjects = JSON.stringify(context.state.projects);
+    localStorage.setItem("projects", parsedProjects);
   },
 };

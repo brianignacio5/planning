@@ -52,7 +52,6 @@ import { Action, State, Mutation } from "vuex-class";
 
 @Component
 export default class App extends Vue {
-  @Action private getProjectsLocally;
   @State("myUser") storeMyUser: user;
   @Mutation setUser;
 
@@ -70,7 +69,6 @@ export default class App extends Vue {
         token: newUserData.token
       };
       this.setUser(newUser);
-      this.getProjectsLocally();
     }
   }
 }

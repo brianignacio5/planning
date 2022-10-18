@@ -75,7 +75,7 @@ export default class Board extends Vue {
   }
 
   public removeBoard() {
-    this.deleteBoard(this.board._id);
+    this.deleteBoard(this.board);
     this.removeBoardWithId(this.board._id);
   }
 
