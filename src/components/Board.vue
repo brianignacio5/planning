@@ -97,7 +97,9 @@ export default class Board extends Vue {
 
   public drop(e) {
     const cardId = e.dataTransfer.getData("card_id");
+    const cardDragged = e.dataTransfer.getData("dragged_card");
     console.log(cardId);
+    console.log(JSON.stringify(cardDragged));
     const dropYPosition = e.pageY;
     let isBoardUpdated = false;
     for (let i = 0; i < this.board.cards.length; i++) {

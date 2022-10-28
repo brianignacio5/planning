@@ -20,6 +20,24 @@ class LocalDataService implements AbstractDataService {
     localStorage.setItem("projects", parsedProjects);
   }
 
+  setCurrentProject(project: project) {
+    const parsedProject = JSON.stringify(project);
+    localStorage.setItem("currentProject", parsedProject);
+  }
+
+  getCurrentProject() {
+    const currentProject = localStorage.getItem("currentProject");
+    if (currentProject) {
+      try {
+        const curProject: project = JSON.parse(currentProject);
+        return curProject;
+      } catch (error) {
+        console.log(error);
+        localStorage.removeItem("currentProject");
+      }
+    }
+  }
+
   async getAllCardsOfUser(user: user): Promise<card[]> {
     const localUserCards = localStorage.getItem("cards");
     if (localUserCards) {
@@ -42,13 +60,14 @@ class LocalDataService implements AbstractDataService {
     if (!localProjects) {
       return;
     }
-    const boardId = localProjects[projectId].boards.length;
+    const projectIndex = parseInt(projectId);
+    const boardId = localProjects[projectIndex].boards.length;
     const newBoard: board = {
       name: newBoardName,
       user,
       cards: [],
       _id: boardId.toString(),
-      project: projectId
+      project: projectId,
     } as board;
     localProjects[projectId].boards.push(newBoard);
     this.saveProjectsLocally(localProjects);
@@ -56,6 +75,16 @@ class LocalDataService implements AbstractDataService {
   }
 
   async createCard(newCard: card, user: user): Promise<card> {
+    const localProjects = await this.getAllProjects(user);
+    if (!localProjects) {
+      return;
+    }
+    const curProject = this.getCurrentProject();
+    const projectIndex = parseInt(curProject._id);
+    newCard._id =
+      localProjects[projectIndex].boards[newCard.board].cards.length.toString();
+    localProjects[projectIndex].boards[newCard.board].cards.push(newCard);
+    this.saveProjectsLocally(localProjects);
     return newCard;
   }
 
@@ -64,9 +93,15 @@ class LocalDataService implements AbstractDataService {
   }
 
   async createProject(newProject: project, user: user): Promise<project> {
-    const localProjects = await this.getAllProjects(user);
-    newProject._id = localProjects ? localProjects.length.toString(): "0";
+    let localProjects = await this.getAllProjects(user);
+    newProject._id = localProjects ? localProjects.length.toString() : "0";
     newProject.boards = [];
+    if (localProjects && localProjects.length) {
+      localProjects.push(newProject);
+    } else {
+      localProjects = [newProject];
+    }
+    this.saveProjectsLocally(localProjects);
     return newProject;
   }
 
@@ -75,14 +110,29 @@ class LocalDataService implements AbstractDataService {
     if (!localProjects) {
       return;
     }
-    const boardId = localProjects[board.project].boards.findIndex((b) => b._id === board._id);
+    const boardId = localProjects[board.project].boards.findIndex(
+      (b) => b._id === board._id
+    );
     const deletedBoard = localProjects[board.project].boards.splice(boardId, 1);
     this.saveProjectsLocally(localProjects);
     return deletedBoard as board;
   }
 
   async deleteCard(card: card, user: user): Promise<card> {
-    return {} as card;
+    const localProjects = await this.getAllProjects(user);
+    if (!localProjects) {
+      return;
+    }
+    const curProject = this.getCurrentProject();
+    const projectIndex = parseInt(curProject._id);
+    const cardId = localProjects[projectIndex].boards[
+      parseInt(card.board)
+    ].cards.findIndex((c) => c._id === card._id);
+    const deletedCard = localProjects[projectIndex].boards[
+      parseInt(card.board)
+    ].cards.splice(cardId, 1);
+    this.saveProjectsLocally(localProjects);
+    return deletedCard[0] as card;
   }
 
   async deleteComment(comment: comment, user: user): Promise<comment> {
@@ -90,13 +140,30 @@ class LocalDataService implements AbstractDataService {
   }
 
   async updateCard(newCard: card, user: user): Promise<card> {
-    return {} as card;
+    const localProjects = await this.getAllProjects(user);
+    if (!localProjects) {
+      return;
+    }
+    const curProject = this.getCurrentProject();
+    const projectIndex = parseInt(curProject._id);
+    const cardId = localProjects[projectIndex].boards[
+      parseInt(newCard.board)
+    ].cards.findIndex((c: card) => c._id === newCard._id);
+    console.log("ola que hace");
+    console.log(cardId);
+    const updatedCard = localProjects[projectIndex].boards[
+      parseInt(newCard.board)
+    ].cards.splice(cardId, 1, newCard);
+    this.saveProjectsLocally(localProjects);
+    return updatedCard[0] as card;
   }
 
   async updateProject(newProject: project, user: user): Promise<project> {
     const localProjects = await this.getAllProjects(user);
     if (localProjects) {
-      const projIndex = localProjects.findIndex((p) => p._id === newProject._id);
+      const projIndex = localProjects.findIndex(
+        (p) => p._id === newProject._id
+      );
       localProjects.splice(projIndex, 1, newProject);
       this.saveProjectsLocally(localProjects);
     }

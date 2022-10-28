@@ -41,7 +41,6 @@ export const actions: ActionTree<PlanState, any> = {
         context.state.myUser
       );
       context.state.boards.push(savedBoard);
-      this.dispatch("saveProjectsLocally");
     } catch (error) {
       console.log(error);
     }
@@ -59,7 +58,6 @@ export const actions: ActionTree<PlanState, any> = {
           break;
         }
       }
-      this.dispatch("saveBoardsLocally");
     } catch (error) {
       console.log(error);
     }
@@ -85,7 +83,6 @@ export const actions: ActionTree<PlanState, any> = {
           }
         }
       }
-      this.dispatch("saveBoardsLocally");
     } catch (error) {
       console.log(error);
     }
@@ -97,7 +94,6 @@ export const actions: ActionTree<PlanState, any> = {
         context.state.myUser
       );
       context.state.projects.push(savedProject);
-      this.dispatch("saveProjectsLocally");
     } catch (error) {
       console.log(error);
     }
@@ -174,12 +170,8 @@ export const actions: ActionTree<PlanState, any> = {
       console.log(error);
     }
   },
-  saveBoardsLocally(context) {
-    const parsedBoards = JSON.stringify(context.state.boards);
-    localStorage.setItem("boards", parsedBoards);
-  },
-  saveProjectsLocally(context) {
-    const parsedProjects = JSON.stringify(context.state.projects);
-    localStorage.setItem("projects", parsedProjects);
+  setCurrentProject(context) {
+    const parsedProject = JSON.stringify(context.state.selectedProject);
+    localStorage.setItem("currentProject", parsedProject);
   },
 };
