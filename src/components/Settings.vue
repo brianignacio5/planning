@@ -84,7 +84,6 @@ export default class Settings extends Vue {
   @State("settingsError") storeSettingsError: string[];
   @Mutation setSettingsError;
   @Mutation clearSettingsError;
-  @Mutation setUser;
   private userInfo: userInfo = {
     email: "",
     name: "",
@@ -92,7 +91,7 @@ export default class Settings extends Vue {
     picture: "",
     oldPassword: undefined,
     newPassword: undefined,
-    newNewPassword: undefined
+    newNewPassword: undefined,
   };
   private userInfoFieldErrors = {
     email: false,
@@ -101,7 +100,7 @@ export default class Settings extends Vue {
     picture: false,
     oldPassword: false,
     newPassword: false,
-    newNewPassword: false
+    newNewPassword: false,
   };
 
   get errors() {
@@ -117,7 +116,7 @@ export default class Settings extends Vue {
       picture: false,
       oldPassword: false,
       newPassword: false,
-      newNewPassword: false
+      newNewPassword: false,
     };
   }
 
@@ -127,6 +126,10 @@ export default class Settings extends Vue {
     if (!this.userInfo.email) {
       this.setSettingsError("Email is required");
       this.userInfoFieldErrors.email = true;
+    }
+    if (!this.userInfo.name) {
+      this.setSettingsError("Name is required");
+      this.userInfoFieldErrors.name = true;
     }
     if (this.userInfo.newPassword && !this.userInfo.oldPassword) {
       this.setSettingsError("Please input the old password");
@@ -147,31 +150,20 @@ export default class Settings extends Vue {
       newUser.email = this.userInfo.email;
       newUser.picture = this.userInfo.picture;
       newUser.name = this.userInfo.name;
-      this.setUser(newUser);
       this.updateUserInfo(this.userInfo);
     }
   }
 
   mounted() {
-    const newUserData = this.$cookies.get("planningJwt");
-    if (newUserData) {
-      const newUser = {
-        name: newUserData.name,
-        email: newUserData.email,
-        picture: newUserData.picture,
-        token: newUserData.token
-      };
-      this.setUser(newUser);
-      this.userInfo = {
-        email: newUserData.email,
-        name: newUserData.name,
-        password: undefined,
-        picture: newUserData.picture,
-        oldPassword: undefined,
-        newPassword: undefined,
-        newNewPassword: undefined
-      };
-    }
+    this.userInfo = {
+      email: this.storeMyUser.email,
+      name: this.storeMyUser.name,
+      password: undefined,
+      picture: this.storeMyUser.picture,
+      oldPassword: undefined,
+      newPassword: undefined,
+      newNewPassword: undefined,
+    };
   }
 }
 </script>

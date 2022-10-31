@@ -4,23 +4,12 @@ import { PlanState } from "./index";
 import { board, card, comment, project, user, userInfo } from "../board";
 
 export const actions: ActionTree<PlanState, any> = {
-  async getProjectsLocally(context) {
-    const onlineProjects = await dataService.getAllProjects(
-      context.state.myUser
-    );
-    if (onlineProjects) {
-      context.commit("setProjects", onlineProjects);
-      return;
-    }
-    const localProjects = localStorage.getItem("projects");
-    if (localProjects) {
-      try {
-        const projects = JSON.parse(localProjects);
-        context.commit("setProjects", projects);
-      } catch (error) {
-        console.log(error);
-        localStorage.removeItem("projects");
-      }
+  async getProjects(context) {
+    try {
+      const projects = await dataService.getAllProjects(context.state.myUser);
+      context.commit("setProjects", projects);
+    } catch (error) {
+      console.log(error);
     }
   },
   async getCardsByUser(context) {
@@ -166,14 +155,14 @@ export const actions: ActionTree<PlanState, any> = {
         userInfo,
         context.state.myUser
       );
-      console.log(resultUser);
       const newUser: user = {
         email: resultUser.email,
         name: resultUser.name,
         picture: resultUser.picture,
         token: context.state.myUser.token,
       };
-      this.commit("setUser", newUser);
+      context.commit("setUser", newUser);
+      context.dispatch("saveUserLocally", newUser);
     } catch (error) {
       const msg = error.message
         ? error.message
@@ -185,5 +174,9 @@ export const actions: ActionTree<PlanState, any> = {
   setCurrentProject(context) {
     const parsedProject = JSON.stringify(context.state.selectedProject);
     localStorage.setItem("currentProject", parsedProject);
+  },
+  saveUserLocally(context, user: user) {
+    const parsedUser = JSON.stringify(user);
+    localStorage.setItem("planningUser", parsedUser);
   },
 };

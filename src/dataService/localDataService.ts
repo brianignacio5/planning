@@ -20,11 +20,6 @@ class LocalDataService implements AbstractDataService {
     localStorage.setItem("projects", parsedProjects);
   }
 
-  setCurrentProject(project: project) {
-    const parsedProject = JSON.stringify(project);
-    localStorage.setItem("currentProject", parsedProject);
-  }
-
   getCurrentProject() {
     const currentProject = localStorage.getItem("currentProject");
     if (currentProject) {

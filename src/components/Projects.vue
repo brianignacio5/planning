@@ -31,7 +31,7 @@ import ProjectCard from "./ProjectCard.vue";
 })
 export default class Projects extends Vue {
   private newProjectName = "";
-  @Action private getProjectsLocally;
+  @Action private getProjects;
   @Action createProject;
   @State projects: project[];
 
@@ -48,7 +48,7 @@ export default class Projects extends Vue {
   }
 
   public mounted() {
-    this.getProjectsLocally();
+    this.getProjects();
   }
 }
 </script>
