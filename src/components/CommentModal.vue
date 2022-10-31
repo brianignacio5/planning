@@ -4,7 +4,7 @@
       <span class="close-button" @click="toggleModal">&times;</span>
       <h2>{{ card.title }}</h2>
 
-      <Comment v-for="comment in card.comments" :comment="comment" :key="comment._id" />
+      <Comment v-for="comment in card.comments" :comment="comment" :card="card" :key="comment._id" />
 
       <div class="add-comment-input" v-if="isNewCommentInputVisible">
         <textarea
@@ -42,7 +42,6 @@ const ESC_KEY_CODE = 27;
 })
 export default class CommentModal extends Vue {
   @Action createComment;
-  @Action deleteComment;
   @Mutation setCommentsModalIsActive;
   @State("myUser") storeMyUser: user;
   @State("selectedCard") card!: card;

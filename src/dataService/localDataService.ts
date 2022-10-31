@@ -81,14 +81,34 @@ class LocalDataService implements AbstractDataService {
     }
     const curProject = this.getCurrentProject();
     const projectIndex = parseInt(curProject._id);
-    newCard._id =
-      localProjects[projectIndex].boards[newCard.board].cards.length.toString();
+    newCard._id = localProjects[projectIndex].boards[
+      newCard.board
+    ].cards.length.toString();
     localProjects[projectIndex].boards[newCard.board].cards.push(newCard);
     this.saveProjectsLocally(localProjects);
     return newCard;
   }
 
-  async createComment(newComment: comment, user: user): Promise<comment> {
+  async createComment(
+    newComment: comment,
+    user: user,
+    board?: string
+  ): Promise<comment> {
+    const localProjects = await this.getAllProjects(user);
+    if (!localProjects) {
+      return;
+    }
+    const curProject = this.getCurrentProject();
+    const projectIndex = parseInt(curProject._id);
+    newComment._id = localProjects[projectIndex].boards[parseInt(board)].cards[
+      parseInt(newComment.card)
+    ].comments.length.toString();
+    newComment.createdBy = user;
+
+    localProjects[projectIndex].boards[parseInt(board)].cards[
+      parseInt(newComment.card)
+    ].comments.push(newComment);
+    this.saveProjectsLocally(localProjects);
     return newComment;
   }
 
@@ -135,8 +155,22 @@ class LocalDataService implements AbstractDataService {
     return deletedCard[0] as card;
   }
 
-  async deleteComment(comment: comment, user: user): Promise<comment> {
-    return {} as comment;
+  async deleteComment(
+    comment: comment,
+    user: user,
+    board?: string
+  ): Promise<comment> {
+    const localProjects = await this.getAllProjects(user);
+    if (!localProjects) {
+      return;
+    }
+    const curProject = this.getCurrentProject();
+    const projectIndex = parseInt(curProject._id);
+    const deletedComment = localProjects[projectIndex].boards[parseInt(board)].cards[
+      parseInt(comment.card)
+    ].comments.splice(parseInt(comment._id), 1);
+    this.saveProjectsLocally(localProjects);
+    return deletedComment[0] as comment;
   }
 
   async updateCard(newCard: card, user: user): Promise<card> {

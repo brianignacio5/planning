@@ -69,7 +69,8 @@ export const actions: ActionTree<PlanState, any> = {
     try {
       const savedComment = await dataService.createComment(
         payload.newComment,
-        context.state.myUser
+        context.state.myUser,
+        payload.board
       );
       for (let i = 0; i < context.state.boards.length; i++) {
         if (context.state.boards[i]._id === payload.board) {
@@ -118,11 +119,12 @@ export const actions: ActionTree<PlanState, any> = {
       console.log(error);
     }
   },
-  async deleteComment(context, comment: comment) {
+  async deleteComment(context, payload: { comment: comment; board: string }) {
     try {
       const resultComment = await dataService.deleteComment(
-        comment,
-        context.state.myUser
+        payload.comment,
+        context.state.myUser,
+        payload.board
       );
     } catch (error) {
       console.log(error);

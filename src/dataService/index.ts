@@ -16,11 +16,11 @@ interface AbstractDataService {
     user: user
   ): Promise<board>;
   createCard(newCard: card, user: user): Promise<card>;
-  createComment(newComment: comment, user: user): Promise<comment>;
+  createComment(newComment: comment, user: user, board?: string): Promise<comment>;
   createProject(newProject: project, user: user): Promise<project>;
   deleteBoard(board: board, user: user): Promise<board>;
   deleteCard(card: card, user: user): Promise<card>;
-  deleteComment(comment: comment, user: user): Promise<comment>;
+  deleteComment(comment: comment, user: user, board?: string): Promise<comment>;
   updateCard(newCard: card, user: user): Promise<card>;
   updateCardByBoard(cardInfo: CardByBoard, user: user): Promise<card>;
   updateProject(newProject: project, user: user): Promise<project>;

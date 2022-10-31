@@ -1,14 +1,17 @@
 <template>
   <div class="comment">
     <div class="profile-pic">
-      <img :src="comment.createdBy.picture || './profile.png'" alt="profile-pic" />
+      <img
+        :src="comment.createdBy.picture || './profile.png'"
+        alt="profile-pic"
+      />
     </div>
     <div class="comment-content">
       <div class="comment-content-title">
-        <p class="comment-name">{{comment.createdBy.name || "username"}}</p>
-        <p class="small">{{cardDate}}</p>
+        <p class="comment-name">{{ comment.createdBy.name || "username" }}</p>
+        <p class="small">{{ cardDate }}</p>
       </div>
-      <div class="comment-content-text">{{comment.content}}</div>
+      <div class="comment-content-text">{{ comment.content }}</div>
     </div>
     <div v-if="isCurrentUser" class="comment-btns">
       <div class="delete-comment">
@@ -20,7 +23,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { comment, user } from "../board";
+import { card, comment, user } from "../board";
 import { Action, Mutation, State } from "vuex-class";
 import moment from "moment";
 
@@ -28,6 +31,7 @@ import moment from "moment";
 export default class Comment extends Vue {
   @Action deleteComment;
   @Mutation removeComment;
+  @Prop() card!: card;
   @Prop() comment!: comment;
   @State("myUser") storeMyUser: user;
   get cardDate() {
@@ -41,11 +45,13 @@ export default class Comment extends Vue {
   }
 
   get isCurrentUser() {
-    return this.comment.createdBy.email.localeCompare(this.storeMyUser.email) === 0;
+    return (
+      this.comment.createdBy.email.localeCompare(this.storeMyUser.email) === 0
+    );
   }
 
   deleteThisComment() {
-    this.deleteComment(this.comment._id);
+    this.deleteComment({ comment: this.comment, board: this.card.board });
     this.removeComment(this.comment);
   }
 }
@@ -101,5 +107,4 @@ export default class Comment extends Vue {
 .delete-comment:hover .icon {
   color: #ea5151;
 }
-
 </style>
