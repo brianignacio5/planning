@@ -1,6 +1,6 @@
 import http from "../http-common";
 import { board, card, comment, project, user, userInfo } from "../board";
-import { AbstractDataService } from "./index";
+import { AbstractDataService, CardByBoard } from "./index";
 
 class PlanningDataService implements AbstractDataService {
   async getAllProjects(user: user) {
@@ -108,6 +108,18 @@ class PlanningDataService implements AbstractDataService {
 
   async updateCard(newCard: card, user: user) {
     const response = await http.put(`/card/${newCard._id}`, newCard, {
+      headers: {
+        Authorization: `${user.token}`,
+      },
+      withCredentials: true,
+    });
+    const updateCard: card = response.data;
+    return updateCard;
+  }
+
+  async updateCardByBoard(cardInfo: CardByBoard, user: user) {
+    cardInfo.card.board = cardInfo.newBoard._id;
+    const response = await http.put(`/card/${cardInfo.card._id}`, cardInfo.card, {
       headers: {
         Authorization: `${user.token}`,
       },

@@ -2,6 +2,11 @@ import { board, card, comment, project, user, userInfo } from "@/board";
 import LocalDataService from "./localDataService";
 import PlanningDataService from "./onlineDataService";
 
+interface CardByBoard {
+  card: card, 
+  newBoard: board;
+  boardInsertIndex: number;
+}
 interface AbstractDataService {
   getAllProjects(user: user): Promise<project[]>;
   getAllCardsOfUser(user: user): Promise<card[]>;
@@ -17,6 +22,7 @@ interface AbstractDataService {
   deleteCard(card: card, user: user): Promise<card>;
   deleteComment(comment: comment, user: user): Promise<comment>;
   updateCard(newCard: card, user: user): Promise<card>;
+  updateCardByBoard(cardInfo: CardByBoard, user: user): Promise<card>;
   updateProject(newProject: project, user: user): Promise<project>;
   updateUserInfo(userInfo: userInfo, user: user): Promise<user>;
 }
@@ -25,4 +31,4 @@ const dataService = process.env.BACKEND_URL
   ? PlanningDataService
   : LocalDataService;
 
-export { AbstractDataService, dataService };
+export { AbstractDataService, CardByBoard, dataService };

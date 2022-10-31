@@ -1,5 +1,5 @@
 import { board, card, comment, project, user, userInfo } from "../board";
-import { AbstractDataService } from "./index";
+import { AbstractDataService, CardByBoard } from "./index";
 
 class LocalDataService implements AbstractDataService {
   async getAllProjects(user: user): Promise<project[]> {
@@ -149,11 +149,30 @@ class LocalDataService implements AbstractDataService {
     const cardId = localProjects[projectIndex].boards[
       parseInt(newCard.board)
     ].cards.findIndex((c: card) => c._id === newCard._id);
-    console.log("ola que hace");
-    console.log(cardId);
     const updatedCard = localProjects[projectIndex].boards[
       parseInt(newCard.board)
     ].cards.splice(cardId, 1, newCard);
+    this.saveProjectsLocally(localProjects);
+    return updatedCard[0] as card;
+  }
+
+  async updateCardByBoard(cardInfo: CardByBoard, user: user): Promise<card> {
+    const localProjects = await this.getAllProjects(user);
+    if (!localProjects) {
+      return;
+    }
+    const curProject = this.getCurrentProject();
+    const projectIndex = parseInt(curProject._id);
+    const cardId = localProjects[projectIndex].boards[
+      parseInt(cardInfo.card.board)
+    ].cards.findIndex((c: card) => c._id === cardInfo.card._id);
+    localProjects[projectIndex].boards[
+      parseInt(cardInfo.card.board)
+    ].cards.splice(cardId, 1);
+    cardInfo.card.board = cardInfo.newBoard._id;
+    const updatedCard = localProjects[projectIndex].boards[
+      parseInt(cardInfo.newBoard._id)
+    ].cards.splice(cardInfo.boardInsertIndex, 0, cardInfo.card);
     this.saveProjectsLocally(localProjects);
     return updatedCard[0] as card;
   }

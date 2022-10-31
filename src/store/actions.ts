@@ -1,5 +1,5 @@
 import { ActionTree } from "vuex";
-import { dataService } from "../dataService";
+import { CardByBoard, dataService } from "../dataService";
 import { PlanState } from "./index";
 import { board, card, comment, project, user, userInfo } from "../board";
 
@@ -132,6 +132,16 @@ export const actions: ActionTree<PlanState, any> = {
     try {
       const resultCard = await dataService.updateCard(
         modifiedCard,
+        context.state.myUser
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async updateCardByBoard(context, cardInfo: CardByBoard) {
+    try {
+      const resultCard = await dataService.updateCardByBoard(
+        cardInfo,
         context.state.myUser
       );
     } catch (error) {
