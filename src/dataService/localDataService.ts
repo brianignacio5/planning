@@ -224,7 +224,12 @@ class LocalDataService implements AbstractDataService {
   }
 
   async updateUserInfo(userInfo: userInfo, user: user): Promise<user> {
-    return {} as user;
+    const updatedUser = {
+      email: userInfo.email || user.email,
+      name: userInfo.name || user.name,
+      picture: userInfo.picture || user.picture,
+    }
+    return updatedUser as user;
   }
 }
 
