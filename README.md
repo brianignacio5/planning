@@ -25,6 +25,12 @@ A board can contain many cards, and you can drag and drop a card from a board to
 * Implements a data service to communicate with the backend using axios. See the [planning backend project](https://github.com/brianignacio5/planning-backend).
 * Handle state using vuex.
 
+## Release Github pages
+
+Add commit `git add dist && git commit -m "create subtree message"`
+Release to github `git subtree push --prefix dist origin gh-pages`
+Delete the `gh-pages` branch and redo if any changes in master.
+
 ## Project setup
 ```
 yarn install
