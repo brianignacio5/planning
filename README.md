@@ -2,6 +2,8 @@
 
 <p align="center"><img src="./assets/Abilitare.gif" width=50% height=50% alt="Abilitare"></p>
 
+The project is live [here](https://brianignacio5.github.io/planning)
+
 This project is a Trello-inspired project management tool. You can make a project and create different boards which contains cards. 
 
 A card can be considered a task since it has due date, description and title.

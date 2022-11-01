@@ -13,6 +13,7 @@ class LocalDataService implements AbstractDataService {
         localStorage.removeItem("projects");
       }
     }
+    return [];
   }
 
   saveProjectsLocally(projects: project[]) {
@@ -34,16 +35,26 @@ class LocalDataService implements AbstractDataService {
   }
 
   async getAllCardsOfUser(user: user): Promise<card[]> {
-    const localUserCards = localStorage.getItem("cards");
-    if (localUserCards) {
-      try {
-        const cardsByUser: card[] = JSON.parse(localUserCards);
-        return cardsByUser;
-      } catch (error) {
-        console.log(error);
-        localStorage.removeItem("cards");
+    const localProjects = await this.getAllProjects(user);
+    if (!localProjects) {
+      return;
+    }
+    const curProject = this.getCurrentProject();
+    const projectIndex = parseInt(curProject._id);
+    const resultCards: card[] = [];
+    for (let i = 0; i < localProjects[projectIndex].boards.length; i++) {
+      for (
+        let j = 0;
+        j < localProjects[projectIndex].boards[i].cards.length;
+        j++
+      ) {
+        const curCard = localProjects[projectIndex].boards[i].cards[j];
+        if ((curCard.assignee.token === user.token)) {
+          resultCards.push(curCard);
+        }
       }
     }
+    return resultCards;
   }
 
   async createBoard(
@@ -79,6 +90,7 @@ class LocalDataService implements AbstractDataService {
     newCard._id = localProjects[projectIndex].boards[
       newCard.board
     ].cards.length.toString();
+    newCard.assignee = user;
     localProjects[projectIndex].boards[newCard.board].cards.push(newCard);
     this.saveProjectsLocally(localProjects);
     return newCard;
@@ -110,6 +122,7 @@ class LocalDataService implements AbstractDataService {
   async createProject(newProject: project, user: user): Promise<project> {
     let localProjects = await this.getAllProjects(user);
     newProject._id = localProjects ? localProjects.length.toString() : "0";
+    newProject.users = [user];
     newProject.boards = [];
     if (localProjects && localProjects.length) {
       localProjects.push(newProject);
@@ -161,9 +174,9 @@ class LocalDataService implements AbstractDataService {
     }
     const curProject = this.getCurrentProject();
     const projectIndex = parseInt(curProject._id);
-    const deletedComment = localProjects[projectIndex].boards[parseInt(board)].cards[
-      parseInt(comment.card)
-    ].comments.splice(parseInt(comment._id), 1);
+    const deletedComment = localProjects[projectIndex].boards[
+      parseInt(board)
+    ].cards[parseInt(comment.card)].comments.splice(parseInt(comment._id), 1);
     this.saveProjectsLocally(localProjects);
     return deletedComment[0] as comment;
   }
@@ -223,7 +236,7 @@ class LocalDataService implements AbstractDataService {
       email: userInfo.email || user.email,
       name: userInfo.name || user.name,
       picture: userInfo.picture || user.picture,
-    }
+    };
     return updatedUser as user;
   }
 }

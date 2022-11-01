@@ -50,10 +50,10 @@ export const planningState: PlanState = {
     name: "",
     description: "",
     users: [],
-    _id: ""
+    _id: "",
   },
   settingsError: [],
-  userCards: []
+  userCards: [],
 };
 
 export default new Vuex.Store({

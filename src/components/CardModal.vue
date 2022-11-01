@@ -20,7 +20,7 @@
       />
       <label for="assigne">Assignee</label>
       <select name="assignee" v-model="card.assignee">
-        <option v-for="user in projectUsers" :value="user._id" :key="user.email">
+        <option v-for="user in projectUsers" :value="user" :key="user.email">
           {{ user.name}} - {{user.email}} -
         </option>
       </select>

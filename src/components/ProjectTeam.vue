@@ -3,14 +3,12 @@
     <span class="project-name">{{ project.name }}</span>
     <span class="project-date">{{ cardDate }}</span>
     <p>{{ project.description }}</p>
-    <p v-for="user in project.users" :key="user._id">{{ user.name}}</p>
+    <p v-for="user in project.users" :key="user.email">{{ user.name }}</p>
     <label for="addUserToProject">Add selected user to project</label>
     <select name="addUserToProject" v-model="selectedUser">
-      <option
-        v-for="user in project.users"
-        :value="user._id"
-        :key="user.email"
-      >{{ user.name}} - {{user.email}} -</option>
+      <option v-for="user in project.users" :value="user" :key="user.email"
+        >{{ user.name }} - {{ user.email }} -</option
+      >
     </select>
     <div class="add-new-user" @click="addNewUserToProject">
       <faIcon icon="plus" class="icon" />
@@ -21,20 +19,20 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { Action, Mutation, State } from "vuex-class";
+import { Action } from "vuex-class";
 import { project, user } from "../board";
 import moment from "moment";
 
 @Component
 export default class ProjectTeam extends Vue {
-  @Action addUserToProject;
+  @Action updateProject;
   @Prop() project!: project;
   private selectedUser: user = {
     _id: "",
     name: "",
     email: "",
     picture: "",
-    token: ""
+    token: "",
   };
 
   get cardDate() {
@@ -48,8 +46,12 @@ export default class ProjectTeam extends Vue {
   }
 
   addNewUserToProject() {
-    if (this.project.users.indexOf(this.selectedUser) < 0) {
-      this.addUserToProject(this.selectedUser)
+    if (
+      this.project.users.findIndex((u) => u.token === this.selectedUser.token) <
+      0
+    ) {
+      this.project.users.push(this.selectedUser);
+      this.updateProject(this.project);
     }
   }
 }
