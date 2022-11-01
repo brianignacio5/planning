@@ -84,6 +84,7 @@ export default class Card extends Vue {
     e.dataTransfer.dropEffect = "move";
     console.log(this.card);
     e.dataTransfer.setData("card_id", this.card._id);
+    e.dataTransfer.setData("dragged_card", JSON.stringify(this.card));
   }
 
   get cardDate() {
@@ -97,7 +98,7 @@ export default class Card extends Vue {
   }
 
   removeCard() {
-    this.deleteCard(this.card._id);
+    this.deleteCard(this.card);
     this.removeCardById(this.card._id);
   }
 

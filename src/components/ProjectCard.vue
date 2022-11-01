@@ -23,6 +23,7 @@ import moment from "moment";
 @Component
 export default class ProjectCard extends Vue {
   @Action private updateProject;
+  @Action private setCurrentProject;
   @Prop() project!: project;
   @Mutation setSelectedProject;
   @Mutation setBoards;
@@ -44,6 +45,7 @@ export default class ProjectCard extends Vue {
   public selectProject() {
     this.setBoards(this.project.boards);
     this.setSelectedProject(this.project);
+    this.setCurrentProject();
     this.$router.push({ path: "/project" });
   }
 

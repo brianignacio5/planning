@@ -52,16 +52,24 @@ import { Action, State, Mutation } from "vuex-class";
 
 @Component
 export default class App extends Vue {
-  @Action private getProjectsLocally;
   @State("myUser") storeMyUser: user;
-  @Mutation setUser;
+  @Action updateUserInfo;
 
   get myUser() {
     return this.storeMyUser;
   }
 
   public mounted() {
-    const newUserData = this.$cookies.get("planningJwt");
+    let newUserData = this.$cookies.get("planningJwt");
+    if (!newUserData) {
+      try {
+        const currentUser = localStorage.getItem("planningUser");
+        newUserData = JSON.parse(currentUser);
+      } catch (error) {
+        console.log(error);
+        localStorage.removeItem("planningUser");
+      }
+    }
     if (newUserData) {
       const newUser = {
         name: newUserData.name,
@@ -69,8 +77,7 @@ export default class App extends Vue {
         picture: newUserData.picture,
         token: newUserData.token
       };
-      this.setUser(newUser);
-      this.getProjectsLocally();
+      this.updateUserInfo(newUser);
     }
   }
 }

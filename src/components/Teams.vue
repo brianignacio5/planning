@@ -16,7 +16,7 @@ import { project } from "../board";
   }
 })
 export default class Teams extends Vue {
-  @Action private getProjectsLocally;
+  @Action private getProjects;
   @State("projects") storeProjects: project[];
 
   get projects() {
@@ -24,7 +24,7 @@ export default class Teams extends Vue {
   }
 
   public mounted() {
-    this.getProjectsLocally();
+    this.getProjects();
   }
 }
 </script>

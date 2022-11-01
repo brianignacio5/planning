@@ -1,11 +1,12 @@
-import http from "./http-common";
-import { board, card, comment, project, user, userInfo } from "./board";
+import http from "../http-common";
+import { board, card, comment, project, user, userInfo } from "../board";
+import { AbstractDataService, CardByBoard } from "./index";
 
-class PlanningDataService {
-  async getAllProjects(token: string) {
+class PlanningDataService implements AbstractDataService {
+  async getAllProjects(user: user) {
     const response = await http.get(`/project`, {
       headers: {
-        Authorization: `${token}`,
+        Authorization: `${user.token}`,
       },
       withCredentials: true,
     });
@@ -13,10 +14,10 @@ class PlanningDataService {
     return projects;
   }
 
-  async getAllCardsOfUser(token: string) {
-    const response = await http.get("/card/user" , {
+  async getAllCardsOfUser(user: user) {
+    const response = await http.get("/card/user", {
       headers: {
-        Authorization: `${token}`
+        Authorization: `${user.token}`,
       },
       withCredentials: true,
     });
@@ -24,13 +25,13 @@ class PlanningDataService {
     return cards;
   }
 
-  async createBoard(newBoardName: string, projectId: string, token: string) {
+  async createBoard(newBoardName: string, projectId: string, user: user) {
     const response = await http.post(
       "/board",
       { name: newBoardName, project: projectId },
       {
         headers: {
-          Authorization: `${token}`,
+          Authorization: `${user.token}`,
         },
         withCredentials: true,
       }
@@ -39,10 +40,10 @@ class PlanningDataService {
     return savedBoard;
   }
 
-  async createCard(newCard: card, token: string) {
+  async createCard(newCard: card, user: user) {
     const response = await http.post("/card", newCard, {
       headers: {
-        Authorization: `${token}`,
+        Authorization: `${user.token}`,
       },
       withCredentials: true,
     });
@@ -50,10 +51,10 @@ class PlanningDataService {
     return savedCard;
   }
 
-  async createComment(newComment: comment, token: string) {
+  async createComment(newComment: comment, user: user) {
     const response = await http.post("/comment", newComment, {
       headers: {
-        Authorization: `${token}`,
+        Authorization: `${user.token}`,
       },
       withCredentials: true,
     });
@@ -61,10 +62,10 @@ class PlanningDataService {
     return savedComment;
   }
 
-  async createProject(newProject: project, token: string) {
+  async createProject(newProject: project, user: user) {
     const response = await http.post("/project", newProject, {
       headers: {
-        Authorization: `${token}`,
+        Authorization: `${user.token}`,
       },
       withCredentials: true,
     });
@@ -72,10 +73,10 @@ class PlanningDataService {
     return savedProject;
   }
 
-  async deleteBoard(boardId: string, token: string) {
-    const response = await http.delete("/board/" + boardId, {
+  async deleteBoard(board: board, user: user) {
+    const response = await http.delete("/board/" + board._id, {
       headers: {
-        Authorization: `${token}`,
+        Authorization: `${user.token}`,
       },
       withCredentials: true,
     });
@@ -83,10 +84,10 @@ class PlanningDataService {
     return deletedBoard;
   }
 
-  async deleteCard(cardId: string, token: string) {
-    const response = await http.delete(`/card/${cardId}`, {
+  async deleteCard(card: card, user: user) {
+    const response = await http.delete(`/card/${card._id}`, {
       headers: {
-        Authorization: `${token}`,
+        Authorization: `${user.token}`,
       },
       withCredentials: true,
     });
@@ -94,10 +95,10 @@ class PlanningDataService {
     return deletedCard;
   }
 
-  async deleteComment(commentId: string, token: string) {
-    const response = await http.delete(`/comment/${commentId}`, {
+  async deleteComment(comment: comment, user: user) {
+    const response = await http.delete(`/comment/${comment._id}`, {
       headers: {
-        Authorization: `${token}`,
+        Authorization: `${user.token}`,
       },
       withCredentials: true,
     });
@@ -105,10 +106,10 @@ class PlanningDataService {
     return deletedComment;
   }
 
-  async updateCard(newCard: card, token: string) {
+  async updateCard(newCard: card, user: user) {
     const response = await http.put(`/card/${newCard._id}`, newCard, {
       headers: {
-        Authorization: `${token}`,
+        Authorization: `${user.token}`,
       },
       withCredentials: true,
     });
@@ -116,10 +117,22 @@ class PlanningDataService {
     return updateCard;
   }
 
-  async updateProject(newProject: project, token: string) {
+  async updateCardByBoard(cardInfo: CardByBoard, user: user) {
+    cardInfo.card.board = cardInfo.newBoard._id;
+    const response = await http.put(`/card/${cardInfo.card._id}`, cardInfo.card, {
+      headers: {
+        Authorization: `${user.token}`,
+      },
+      withCredentials: true,
+    });
+    const updateCard: card = response.data;
+    return updateCard;
+  }
+
+  async updateProject(newProject: project, user: user) {
     const response = await http.put(`/project/${newProject._id}`, newProject, {
       headers: {
-        Authorization: `${token}`,
+        Authorization: `${user.token}`,
       },
       withCredentials: true,
     });
@@ -127,12 +140,12 @@ class PlanningDataService {
     return updatedProject;
   }
 
-  async updateUserInfo(userInfo: userInfo, token: string) {
+  async updateUserInfo(userInfo: userInfo, user: user) {
     const response = await http.put("/auth/user", userInfo, {
       headers: {
-        Authorization: `${token}`
+        Authorization: `${user.token}`,
       },
-      withCredentials: true
+      withCredentials: true,
     });
     if (response.data.error) {
       throw new Error(response.data.error);

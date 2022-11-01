@@ -38,6 +38,7 @@
 </template>
 
 <script lang="ts">
+import { CardByBoard } from "@/dataService";
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Action, Mutation } from "vuex-class";
 import { board, card } from "../board";
@@ -53,7 +54,7 @@ const ESC_KEY_CODE = 27;
 export default class Board extends Vue {
   @Action private createCard;
   @Action private deleteBoard;
-  @Action private updateCard;
+  @Action private updateCardByBoard: (card: CardByBoard) => any;
   @Prop() private board!: board;
   @Mutation updateBoardWithCardIndex;
   @Mutation("removeBoard") removeBoardWithId;
@@ -75,7 +76,7 @@ export default class Board extends Vue {
   }
 
   public removeBoard() {
-    this.deleteBoard(this.board._id);
+    this.deleteBoard(this.board);
     this.removeBoardWithId(this.board._id);
   }
 
@@ -88,7 +89,7 @@ export default class Board extends Vue {
         description: "",
         picture: "",
         createdOn: new Date(),
-        dueOn: new Date()
+        dueOn: new Date(),
       };
       this.createCard(newCard);
       this.newCardTitle = "";
@@ -97,7 +98,9 @@ export default class Board extends Vue {
 
   public drop(e) {
     const cardId = e.dataTransfer.getData("card_id");
+    const cardDragged = JSON.parse(e.dataTransfer.getData("dragged_card")) as card;
     console.log(cardId);
+    console.log(JSON.stringify(cardDragged));
     const dropYPosition = e.pageY;
     let isBoardUpdated = false;
     for (let i = 0; i < this.board.cards.length; i++) {
@@ -106,7 +109,11 @@ export default class Board extends Vue {
         cardYPosition &&
         cardYPosition.getBoundingClientRect().y > dropYPosition
       ) {
-        this.updateCard({ _id: cardId, board: this.board, insertIndex: i });
+        this.updateCardByBoard({
+          card: cardDragged,
+          newBoard: this.board,
+          boardInsertIndex: i,
+        });
         this.updateBoardWithCardIndex({
           cardId,
           destBoardId: this.board._id,
@@ -117,10 +124,10 @@ export default class Board extends Vue {
       }
     }
     if (!isBoardUpdated) {
-      this.updateCard({
-        _id: cardId,
-        board: this.board,
-        insertIndex: this.board.cards.length
+      this.updateCardByBoard({
+        card: cardDragged,
+        newBoard: this.board,
+        boardInsertIndex: this.board.cards.length,
       });
       this.updateBoardWithCardIndex({
         cardId,
