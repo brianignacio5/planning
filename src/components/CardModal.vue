@@ -5,79 +5,56 @@
       <label for="card-title">Title</label>
       <input type="text" name="title" id="card-title" v-model="card.title" />
       <label for="card-description">Description</label>
-      <input
-        type="text"
-        name="description"
-        id="card-description"
-        v-model="card.description"
-      />
+      <input type="text" name="description" id="card-description" v-model="card.description" />
       <label for="pictureUrl">Picture:</label>
-      <input
-        type="text"
-        name="picture"
-        id="picture-url"
-        v-model="card.picture"
-      />
+      <input type="text" name="picture" id="picture-url" v-model="card.picture" />
       <label for="assigne">Assignee</label>
       <select name="assignee" v-model="card.assignee">
         <option v-for="user in projectUsers" :value="user" :key="user.email">
-          {{ user.name}} - {{user.email}} -
+          {{ user.name }} - {{ user.email }} -
         </option>
       </select>
       <label for="dueOn">Due on:</label>
-      <DatePicker v-model="card.dueOn" class="centerize"/>
+      <DatePicker v-model="card.dueOn" class="centerize" />
       <button class="delete-btn" @click="removeCard">Delete card</button>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
-import { card, project } from "../board";
-import { Action, Mutation, State } from "vuex-class";
-import DatePicker from "vuejs-datepicker";
-const ESC_KEY_CODE = 27;
-@Component({
-  components: {
-    DatePicker
-  }
-})
-export default class CardModal extends Vue {
-  @Action private updateCard;
-  @Mutation setModalIsActive;
-  @Mutation("removeCard") removeCardById;
-  @State("selectedCard") card!: card;
-  @State("selectedProject") storeSelectedProject!: project;
-  @State("modalIsActive") isActive: boolean;
+<script setup lang="ts">
+import { ref, computed, onMounted } from "vue";
+import { usePlanningStore } from "@/store/planning";
+import DatePicker from "vue-datepicker-next";
+import "vue-datepicker-next/index.css";
 
-  toggleModal() {
-    this.setModalIsActive(!this.isActive);
-    if (!this.isActive) {
-      this.updateCard(this.card);
-    }
-  }
+const planningStore = usePlanningStore();
+const card = computed(() => planningStore.selectedCard);
+const isActive = computed(() => planningStore.modalIsActive);
+const projectUsers = computed(() => planningStore.selectedProject.users);
 
-  get projectUsers() {
-    return this.storeSelectedProject.users;
-  }
-
-  removeCard() {
-    this.removeCardById(this.card._id);
-    this.setModalIsActive(false);
-  }
-
-  mounted() {
-    window.addEventListener("keyup", (e) => {
-      if (e.keyCode === ESC_KEY_CODE) {
-        if (this.isActive) {
-          this.updateCard(this.card);
-        }
-        this.setModalIsActive(false);
-      }
-    });
+function toggleModal() {
+  planningStore.modalIsActive = !planningStore.modalIsActive;
+  if (!isActive.value) {
+    planningStore.updateCard(card.value);
   }
 }
+
+function removeCard() {
+  // Remove card from store and close modal
+  planningStore.deleteCard(card.value);
+  planningStore.modalIsActive = false;
+}
+
+onMounted(() => {
+  window.addEventListener("keyup", (e) => {
+    if (e.key === "Escape") {
+      if (isActive.value) {
+        planningStore.updateCard(card.value);
+      }
+      planningStore.modalIsActive = false;
+    }
+  });
+});
 </script>
 
 <style>
@@ -91,7 +68,10 @@ export default class CardModal extends Vue {
   opacity: 0;
   visibility: hidden;
   transform: scale(1.1);
-  transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
+  transition:
+    visibility 0s linear 0.25s,
+    opacity 0.25s 0s,
+    transform 0.25s;
 }
 
 .modal-content {
@@ -131,7 +111,10 @@ export default class CardModal extends Vue {
   opacity: 1;
   visibility: visible;
   transform: scale(1);
-  transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
+  transition:
+    visibility 0s linear 0s,
+    opacity 0.25s 0s,
+    transform 0.25s;
 }
 
 .delete-btn {

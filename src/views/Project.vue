@@ -19,40 +19,26 @@
   </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
-import Board from "./Board.vue";
-import CardModal from "./CardModal.vue";
-import CommentModal from "./CommentModal.vue";
-import { Action, State } from "vuex-class";
-import { board, project } from "../board";
+<script setup lang="ts">
+import { ref, computed } from "vue";
+import { usePlanningStore } from "@/store/planning";
+import Board from "@/components/Board.vue";
+import CardModal from "@/components/CardModal.vue";
+import CommentModal from "@/components/CommentModal.vue";
 
-@Component({
-  components: {
-    Board,
-    CardModal,
-    CommentModal,
-  },
-})
-export default class ProjectPage extends Vue {
-  private newBoardName = "";
-  @Action private createBoard;
-  @State boards: board[];
-  @State("selectedProject") storeSelectedProject: project;
+const planningStore = usePlanningStore();
+const newBoardName = ref("");
 
-  public addNewBoard() {
-    if (this.newBoardName !== "") {
-      this.createBoard({
-        name: this.newBoardName,
-        project: this.storeSelectedProject._id,
-      });
-      this.newBoardName = "";
-    }
-  }
+const boards = computed(() => planningStore.boards);
+const selectedProject = computed(() => planningStore.selectedProject);
 
-  get selectedProject() {
-    return this.storeSelectedProject;
+function addNewBoard() {
+  if (newBoardName.value !== "") {
+    planningStore.createBoard({
+      name: newBoardName.value,
+      project: selectedProject.value._id,
+    });
+    newBoardName.value = "";
   }
 }
 </script>

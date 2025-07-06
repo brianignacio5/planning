@@ -6,9 +6,9 @@
     <p v-for="user in project.users" :key="user.email">{{ user.name }}</p>
     <label for="addUserToProject">Add selected user to project</label>
     <select name="addUserToProject" v-model="selectedUser">
-      <option v-for="user in project.users" :value="user" :key="user.email"
-        >{{ user.name }} - {{ user.email }} -</option
-      >
+      <option v-for="user in project.users" :value="user" :key="user.email">
+        {{ user.name }} - {{ user.email }} -
+      </option>
     </select>
     <div class="add-new-user" @click="addNewUserToProject">
       <faIcon icon="plus" class="icon" />
@@ -17,42 +17,36 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { Action } from "vuex-class";
-import { project, user } from "../board";
+<script setup lang="ts">
+import { ref, computed } from "vue";
+import { usePlanningStore } from "@/store/planning";
+import type { project, user } from "../types";
 import moment from "moment";
 
-@Component
-export default class ProjectTeam extends Vue {
-  @Action updateProject;
-  @Prop() project!: project;
-  private selectedUser: user = {
-    _id: "",
-    name: "",
-    email: "",
-    picture: "",
-    token: "",
-  };
+const props = defineProps<{ project: project }>();
+const planningStore = usePlanningStore();
+const selectedUser = ref<user>({
+  _id: "",
+  name: "",
+  email: "",
+  picture: "",
+  token: "",
+});
 
-  get cardDate() {
-    if (this.project.createdOn) {
-      const formattedDate = moment(this.project.createdOn.toString()).format(
-        "MMM DD, YYYY"
-      );
-      return formattedDate;
-    }
-    return "";
+const cardDate = computed(() => {
+  if (props.project.createdOn) {
+    return moment(props.project.createdOn.toString()).format("MMM DD, YYYY");
   }
+  return "";
+});
 
-  addNewUserToProject() {
-    if (
-      this.project.users.findIndex((u) => u.token === this.selectedUser.token) <
-      0
-    ) {
-      this.project.users.push(this.selectedUser);
-      this.updateProject(this.project);
-    }
+function addNewUserToProject() {
+  if (
+    props.project.users.findIndex((u) => u.token === selectedUser.value.token) < 0 &&
+    selectedUser.value.token !== ""
+  ) {
+    props.project.users.push({ ...selectedUser.value });
+    planningStore.updateProject(props.project);
   }
 }
 </script>

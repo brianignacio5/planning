@@ -1,6 +1,6 @@
 <template>
   <div
-    :id="card.id"
+    :id="card._id"
     class="card"
     @dragstart="dragStart"
     @dragover.stop
@@ -37,80 +37,65 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { card } from "../board";
-import { Action, Mutation } from "vuex-class";
+<script setup lang="ts">
+import { ref, nextTick, computed } from "vue";
+import { usePlanningStore } from "@/store/planning";
+import type { card } from "@/types";
 import moment from "moment";
 
-@Component
-export default class Card extends Vue {
-  @Action private deleteCard;
-  @Action private updateCard;
-  @Prop() card!: card;
-  @Mutation setCommentsModalIsActive;
-  @Mutation setModalIsActive;
-  @Mutation setSelectedCard;
-  @Mutation("removeCard") removeCardById;
-  private isCardHovered = false;
-  private cardEdit = false;
+const props = defineProps<{ card: card }>();
+const planningStore = usePlanningStore();
 
-  get cardDescription() {
-    return this.card._id + "-desc";
-  }
+const isCardHovered = ref(false);
+const cardEdit = ref(false);
 
-  public toggleCardHover() {
-    this.isCardHovered = !this.isCardHovered;
-  }
+const cardDescription = `${props.card._id}-desc`;
 
-  public toggleCardEdit() {
-    this.cardEdit = !this.cardEdit;
-    if (this.cardEdit) {
-      this.$nextTick(() => {
-        const cardDescElem = document.getElementById(this.cardDescription);
-        if (cardDescElem) {
-          cardDescElem.focus();
-        }
-      });
-    }
-  }
+function toggleCardHover() {
+  isCardHovered.value = !isCardHovered.value;
+}
 
-  public saveCard() {
-    this.updateCard(this.card);
-    this.toggleCardEdit();
+function toggleCardEdit() {
+  cardEdit.value = !cardEdit.value;
+  if (cardEdit.value) {
+    nextTick(() => {
+      const cardDescElem = document.getElementById(cardDescription);
+      if (cardDescElem) {
+        cardDescElem.focus();
+      }
+    });
   }
+}
 
-  public dragStart(e) {
-    e.dataTransfer.dropEffect = "move";
-    console.log(this.card);
-    e.dataTransfer.setData("card_id", this.card._id);
-    e.dataTransfer.setData("dragged_card", JSON.stringify(this.card));
-  }
+function saveCard() {
+  planningStore.updateCard(props.card);
+  toggleCardEdit();
+}
 
-  get cardDate() {
-    if (this.card.createdOn) {
-      const formattedDate = moment(this.card.createdOn.toString()).format(
-        "MMM DD, YYYY"
-      );
-      return formattedDate;
-    }
-    return "";
-  }
+function dragStart(e: DragEvent) {
+  e.dataTransfer?.setData("card_id", props.card._id);
+  e.dataTransfer?.setData("dragged_card", JSON.stringify(props.card));
+}
 
-  removeCard() {
-    this.deleteCard(this.card);
-    this.removeCardById(this.card._id);
+const cardDate = computed(() => {
+  if (props.card.createdOn) {
+    return moment(props.card.createdOn.toString()).format("MMM DD, YYYY");
   }
+  return "";
+});
 
-  public showDetail() {
-    this.setSelectedCard(this.card);
-    this.setModalIsActive(true);
-  }
+function removeCard() {
+  planningStore.deleteCard(props.card);
+}
 
-  public showComments() {
-    this.setSelectedCard(this.card);
-    this.setCommentsModalIsActive(true);
-  }
+function showDetail() {
+  planningStore.selectedCard = props.card;
+  planningStore.modalIsActive = true;
+}
+
+function showComments() {
+  planningStore.selectedCard = props.card;
+  planningStore.commentsModalIsActive = true;
 }
 </script>
 

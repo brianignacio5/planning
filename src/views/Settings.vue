@@ -72,28 +72,38 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import { Action, Mutation, State } from "vuex-class";
-import { user, userInfo } from "@/board";
+<script setup lang="ts">
+import { ref, computed, onMounted } from "vue";
+import { usePlanningStore } from "@/store/planning";
+import type { userInfo } from "@/types";
 
-@Component
-export default class Settings extends Vue {
-  @Action updateUserInfo;
-  @State("myUser") storeMyUser: user;
-  @State("settingsError") storeSettingsError: string[];
-  @Mutation setSettingsError;
-  @Mutation clearSettingsError;
-  private userInfo: userInfo = {
-    email: "",
-    name: "",
-    password: undefined,
-    picture: "",
-    oldPassword: undefined,
-    newPassword: undefined,
-    newNewPassword: undefined,
-  };
-  private userInfoFieldErrors = {
+const planningStore = usePlanningStore();
+
+const userInfo = ref<userInfo>({
+  email: "",
+  name: "",
+  password: undefined,
+  picture: "",
+  oldPassword: undefined,
+  newPassword: undefined,
+  newNewPassword: undefined,
+});
+
+const userInfoFieldErrors = ref({
+  email: false,
+  name: false,
+  password: false,
+  picture: false,
+  oldPassword: false,
+  newPassword: false,
+  newNewPassword: false,
+});
+
+const errors = computed(() => planningStore.settingsError);
+
+function clearErrors() {
+  planningStore.settingsError = [];
+  userInfoFieldErrors.value = {
     email: false,
     name: false,
     password: false,
@@ -102,70 +112,50 @@ export default class Settings extends Vue {
     newPassword: false,
     newNewPassword: false,
   };
+}
 
-  get errors() {
-    return this.storeSettingsError;
+function saveChanges(e: Event) {
+  e.preventDefault();
+  planningStore.settingsError = [];
+  if (!userInfo.value.email) {
+    planningStore.settingsError.push("Email is required");
+    userInfoFieldErrors.value.email = true;
   }
-
-  clearErrors() {
-    this.clearSettingsError();
-    this.userInfoFieldErrors = {
-      email: false,
-      name: false,
-      password: false,
-      picture: false,
-      oldPassword: false,
-      newPassword: false,
-      newNewPassword: false,
-    };
+  if (!userInfo.value.name) {
+    planningStore.settingsError.push("Name is required");
+    userInfoFieldErrors.value.name = true;
   }
-
-  saveChanges(e) {
-    e.preventDefault();
-    this.clearSettingsError();
-    if (!this.userInfo.email) {
-      this.setSettingsError("Email is required");
-      this.userInfoFieldErrors.email = true;
-    }
-    if (!this.userInfo.name) {
-      this.setSettingsError("Name is required");
-      this.userInfoFieldErrors.name = true;
-    }
-    if (this.userInfo.newPassword && !this.userInfo.oldPassword) {
-      this.setSettingsError("Please input the old password");
-      this.userInfoFieldErrors.oldPassword = true;
-    }
-    if (
-      this.userInfo.newPassword &&
-      this.userInfo.newPassword !== this.userInfo.newNewPassword
-    ) {
-      this.setSettingsError("New password and confirmation doesn't match");
-      this.userInfoFieldErrors.newPassword = true;
-      this.userInfoFieldErrors.newNewPassword = true;
-    } else {
-      this.userInfo.password = this.userInfo.newPassword;
-    }
-    if (this.errors.length < 1) {
-      const newUser = this.storeMyUser;
-      newUser.email = this.userInfo.email;
-      newUser.picture = this.userInfo.picture;
-      newUser.name = this.userInfo.name;
-      this.updateUserInfo(this.userInfo);
-    }
+  if (userInfo.value.newPassword && !userInfo.value.oldPassword) {
+    planningStore.settingsError.push("Please input the old password");
+    userInfoFieldErrors.value.oldPassword = true;
   }
-
-  mounted() {
-    this.userInfo = {
-      email: this.storeMyUser.email,
-      name: this.storeMyUser.name,
-      password: undefined,
-      picture: this.storeMyUser.picture,
-      oldPassword: undefined,
-      newPassword: undefined,
-      newNewPassword: undefined,
-    };
+  if (userInfo.value.newPassword && userInfo.value.newPassword !== userInfo.value.newNewPassword) {
+    planningStore.settingsError.push("New password and confirmation doesn't match");
+    userInfoFieldErrors.value.newPassword = true;
+    userInfoFieldErrors.value.newNewPassword = true;
+  } else {
+    userInfo.value.password = userInfo.value.newPassword;
+  }
+  if (planningStore.settingsError.length < 1) {
+    const newUser = { ...planningStore.myUser };
+    newUser.email = userInfo.value.email ?? "";
+    newUser.picture = userInfo.value.picture ?? "";
+    newUser.name = userInfo.value.name ?? "";
+    planningStore.updateUserInfo(userInfo.value);
   }
 }
+
+onMounted(() => {
+  userInfo.value = {
+    email: planningStore.myUser.email,
+    name: planningStore.myUser.name,
+    password: undefined,
+    picture: planningStore.myUser.picture,
+    oldPassword: undefined,
+    newPassword: undefined,
+    newNewPassword: undefined,
+  };
+});
 </script>
 
 <style scoped>

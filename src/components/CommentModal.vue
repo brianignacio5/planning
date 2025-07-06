@@ -4,7 +4,12 @@
       <span class="close-button" @click="toggleModal">&times;</span>
       <h2>{{ card.title }}</h2>
 
-      <Comment v-for="comment in card.comments" :comment="comment" :card="card" :key="comment._id" />
+      <Comment
+        v-for="comment in card.comments"
+        :comment="comment"
+        :card="card"
+        :key="comment._id"
+      />
 
       <div class="add-comment-input" v-if="isNewCommentInputVisible">
         <textarea
@@ -27,64 +32,63 @@
   </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
-import { card, user } from "../board";
-import { Action, Mutation, State } from "vuex-class";
+<script setup lang="ts">
+import { ref, computed, nextTick, onMounted } from "vue";
+import { usePlanningStore } from "@/store/planning";
 import Comment from "./Comment.vue";
-const ESC_KEY_CODE = 27;
 
-@Component({
-  components: {
-    Comment
-  }
-})
-export default class CommentModal extends Vue {
-  @Action createComment;
-  @Mutation setCommentsModalIsActive;
-  @State("myUser") storeMyUser: user;
-  @State("selectedCard") card!: card;
-  @State("commentsModalIsActive") isActive: boolean;
-  private isNewCommentInputVisible = false;
-  private newCommentContent = "";
+const planningStore = usePlanningStore();
+const card = computed(() => planningStore.selectedCard);
+const isActive = computed(() => planningStore.commentsModalIsActive);
+const isNewCommentInputVisible = ref(false);
+const newCommentContent = ref("");
+const contextCommentArea = ref<HTMLTextAreaElement | null>(null);
 
-  public toggleNewCommentInput() {
-    this.isNewCommentInputVisible = !this.isNewCommentInputVisible;
-    if (this.isNewCommentInputVisible) {
-      this.$nextTick(() => {
-        (this.$refs.contextCommentArea as HTMLElement).focus();
-      });
-    }
-  }
-
-  toggleModal() {
-    this.setCommentsModalIsActive(!this.isActive);
-  }
-
-  addCommentToCard() {
-    if (this.newCommentContent !== "") {
-      const newComment = {
-        newComment: {
-          card: this.card._id,
-          content: this.newCommentContent.trim(),
-          createdOn: new Date()
-        },
-        board: this.card.board
-      };
-      this.createComment(newComment);
-      this.newCommentContent = "";
-    }
-  }
-
-  mounted() {
-    window.addEventListener("keyup", e => {
-      if (e.keyCode === ESC_KEY_CODE) {
-        this.setCommentsModalIsActive(false);
-      }
+function toggleNewCommentInput() {
+  isNewCommentInputVisible.value = !isNewCommentInputVisible.value;
+  if (isNewCommentInputVisible.value) {
+    nextTick(() => {
+      contextCommentArea.value?.focus();
     });
   }
 }
+
+function toggleModal() {
+  planningStore.commentsModalIsActive = !planningStore.commentsModalIsActive;
+}
+
+function addCommentToCard() {
+  if (newCommentContent.value !== "") {
+    // Generate _id based on last comment index
+    const comments = card.value.comments || [];
+    let newId = "0";
+    if (comments.length > 0) {
+      const lastId = comments[comments.length - 1]._id;
+      const lastNum = parseInt(lastId, 10);
+      newId = isNaN(lastNum) ? `${comments.length}` : `${lastNum + 1}`;
+    }
+    const newComment = {
+      newComment: {
+        card: card.value._id,
+        content: newCommentContent.value.trim(),
+        createdOn: new Date(),
+        _id: newId,
+        createdBy: planningStore.myUser,
+      },
+      board: card.value.board,
+    };
+    planningStore.createComment(newComment);
+    newCommentContent.value = "";
+  }
+}
+
+onMounted(() => {
+  window.addEventListener("keyup", (e) => {
+    if (e.key === "Escape") {
+      planningStore.commentsModalIsActive = false;
+    }
+  });
+});
 </script>
 
 <style>

@@ -1,6 +1,6 @@
 <template>
   <div class="project-card" @click="toggleCardEdit">
-    <span class="project-name" @click="selectProject">{{ project.name }}</span>
+    <span class="project-name" @click.stop="selectProject">{{ project.name }}</span>
     <span class="project-date">{{ cardDate }}</span>
     <p v-show="!cardEdit">{{ project.description }}</p>
     <input
@@ -14,57 +14,50 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { Action, Mutation } from "vuex-class";
-import { project } from "../board";
+<script setup lang="ts">
+import { ref, computed, nextTick } from "vue";
+import { useRouter } from "vue-router";
+import { usePlanningStore } from "@/store/planning";
+import type { project } from "../types";
 import moment from "moment";
 
-@Component
-export default class ProjectCard extends Vue {
-  @Action private updateProject;
-  @Action private setCurrentProject;
-  @Prop() project!: project;
-  @Mutation setSelectedProject;
-  @Mutation setBoards;
-  private cardEdit = false;
+const props = defineProps<{ project: project }>();
+const planningStore = usePlanningStore();
+const router = useRouter();
+const cardEdit = ref(false);
 
-  get projectDescription() {
-    return this.project._id + "-desc";
+const projectDescription = computed(() => props.project._id + "-desc");
+const cardDate = computed(() => {
+  if (props.project.createdOn) {
+    return moment(props.project.createdOn.toString()).format("MMM DD, YYYY");
   }
+  return "";
+});
 
-  get cardDate() {
-    if (this.project.createdOn) {
-      const formattedDate = moment(this.project.createdOn.toString()).format(
-        "MMM DD, YYYY"
-      );
-      return formattedDate;
-    }
-    return "";
-  }
-  public selectProject() {
-    this.setBoards(this.project.boards);
-    this.setSelectedProject(this.project);
-    this.setCurrentProject();
-    this.$router.push({ path: "/project" });
-  }
+function selectProject(e?: Event) {
+  // Prevent parent click from toggling edit
+  if (e) e.stopPropagation();
+  // Set the selected project in the store
+  planningStore.selectedProject = props.project;
+  planningStore.setCurrentProject();
+  router.push({ path: "/project" });
+}
 
-  public toggleCardEdit() {
-    this.cardEdit = !this.cardEdit;
-    if (this.cardEdit) {
-      this.$nextTick(() => {
-        const projDescElem = document.getElementById(this.projectDescription);
-        if (projDescElem) {
-          projDescElem.focus();
-        }
-      });
-    }
+function toggleCardEdit() {
+  cardEdit.value = !cardEdit.value;
+  if (cardEdit.value) {
+    nextTick(() => {
+      const projDescElem = document.getElementById(projectDescription.value);
+      if (projDescElem) {
+        (projDescElem as HTMLInputElement).focus();
+      }
+    });
   }
+}
 
-  public saveCard() {
-    this.updateProject(this.project);
-    this.toggleCardEdit();
-  }
+function saveCard() {
+  planningStore.updateProject(props.project);
+  toggleCardEdit();
 }
 </script>
 
