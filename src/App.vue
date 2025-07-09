@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="main-app">
     <div class="columns">
       <div class="sidenav">
         <div class="title">
@@ -34,10 +34,12 @@
       </div>
       <div class="content">
         <div class="navbar">
-          <div class="profile-name">{{ myUser.name }}</div>
-          <div class="profile-pic">
-            <img :src="myUser.picture || './profile.png'" alt="profile-pic" />
-          </div>
+          <router-link to="/settings" class="profile-name">{{
+            planningStore.myUser.name
+          }}</router-link>
+          <router-link to="/settings" class="profile-pic">
+            <img :src="planningStore.myUser.picture || '/profile.png'" alt="profile-pic" />
+          </router-link>
         </div>
         <router-view></router-view>
       </div>
@@ -45,42 +47,32 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import { user } from "./board";
-import { Action, State, Mutation } from "vuex-class";
+<script setup lang="ts">
+import { onMounted } from "vue";
+import { usePlanningStore } from "./store/planning";
 
-@Component
-export default class App extends Vue {
-  @State("myUser") storeMyUser: user;
-  @Action updateUserInfo;
+const planningStore = usePlanningStore();
 
-  get myUser() {
-    return this.storeMyUser;
-  }
-
-  public mounted() {
-    let newUserData = this.$cookies.get("planningJwt");
-    if (!newUserData) {
-      try {
-        const currentUser = localStorage.getItem("planningUser");
-        newUserData = JSON.parse(currentUser);
-      } catch (error) {
-        console.log(error);
-        localStorage.removeItem("planningUser");
-      }
-    }
-    if (newUserData) {
+onMounted(() => {
+  try {
+    const currentUser = localStorage.getItem("planningUser");
+    if (currentUser) {
+      let newUserData = JSON.parse(currentUser);
       const newUser = {
         name: newUserData.name,
         email: newUserData.email,
         picture: newUserData.picture,
-        token: newUserData.token
+        token: newUserData.token,
       };
-      this.updateUserInfo(newUser);
+      planningStore.updateUserInfo(newUser);
     }
+  } catch (error) {
+    console.log(error);
+    localStorage.removeItem("planningUser");
   }
-}
+
+  planningStore.getProjects();
+});
 </script>
 
 <style>
@@ -117,8 +109,8 @@ label {
   align-items: center;
   margin: 0.25em;
   justify-content: flex-end;
-  background: transparent linear-gradient(90deg, #272626 0%, #4a4949 100%) 0% 0%
-    no-repeat padding-box;
+  background: transparent linear-gradient(90deg, #272626 0%, #4a4949 100%) 0% 0% no-repeat
+    padding-box;
 }
 
 .columns {
@@ -135,7 +127,7 @@ label {
   display: flex;
   background-color: #ffffff;
   flex-direction: column;
-  width: 105px;
+  width: 120px;
   justify-content: space-between;
   margin: 0.25em;
 }
@@ -182,11 +174,23 @@ label {
   height: 5em;
   margin: 0.25em;
   border-radius: 1em;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+
+.profile-pic:hover {
+  transform: scale(1.05);
 }
 .profile-name {
   margin: 0.25em;
   color: #ffffff;
   font-size: 36px;
+  text-decoration: none;
+}
+
+.profile-name:hover {
+  color: #ea5151;
+  text-shadow: 1px 0px 10px rgba(0, 0, 0, 0.5);
 }
 
 .profile-pic img {

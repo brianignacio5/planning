@@ -1,10 +1,7 @@
 <template>
   <div class="comment">
     <div class="profile-pic">
-      <img
-        :src="comment.createdBy.picture || './profile.png'"
-        alt="profile-pic"
-      />
+      <img :src="comment.createdBy.picture || '/profile.png'" alt="profile-pic" />
     </div>
     <div class="comment-content">
       <div class="comment-content-title">
@@ -21,39 +18,29 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { card, comment, user } from "../board";
-import { Action, Mutation, State } from "vuex-class";
+<script setup lang="ts">
+import { computed } from "vue";
+import { usePlanningStore } from "@/store/planning";
+import type { card, comment } from "@/types";
 import moment from "moment";
 
-@Component
-export default class Comment extends Vue {
-  @Action deleteComment;
-  @Mutation removeComment;
-  @Prop() card!: card;
-  @Prop() comment!: comment;
-  @State("myUser") storeMyUser: user;
-  get cardDate() {
-    if (this.comment.createdOn) {
-      const formattedDate = moment(this.comment.createdOn.toString()).format(
-        "MMM DD, YYYY"
-      );
-      return formattedDate;
-    }
-    return "";
-  }
+const props = defineProps<{ card: card; comment: comment }>();
+const planningStore = usePlanningStore();
 
-  get isCurrentUser() {
-    return (
-      this.comment.createdBy.email.localeCompare(this.storeMyUser.email) === 0
-    );
+const cardDate = computed(() => {
+  if (props.comment.createdOn) {
+    return moment(props.comment.createdOn.toString()).format("MMM DD, YYYY");
   }
+  return "";
+});
 
-  deleteThisComment() {
-    this.deleteComment({ comment: this.comment, board: this.card.board });
-    this.removeComment(this.comment);
-  }
+const isCurrentUser = computed(() => {
+  return props.comment.createdBy.email.localeCompare(planningStore.myUser.email) === 0;
+});
+
+function deleteThisComment() {
+  planningStore.deleteComment(props.comment);
+  // Optionally remove from local state if needed
 }
 </script>
 

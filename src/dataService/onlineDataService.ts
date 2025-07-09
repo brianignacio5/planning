@@ -1,6 +1,6 @@
 import http from "../http-common";
-import { board, card, comment, project, user, userInfo } from "../board";
-import { AbstractDataService, CardByBoard } from "./index";
+import type { board, card, comment, project, user, userInfo } from "../types";
+import type { AbstractDataService, CardByBoard } from "./index";
 
 class PlanningDataService implements AbstractDataService {
   async getAllProjects(user: user) {
@@ -34,7 +34,7 @@ class PlanningDataService implements AbstractDataService {
           Authorization: `${user.token}`,
         },
         withCredentials: true,
-      }
+      },
     );
     const savedBoard: board = response.data;
     return savedBoard;
@@ -104,6 +104,17 @@ class PlanningDataService implements AbstractDataService {
     });
     const deletedComment: comment = response.data;
     return deletedComment;
+  }
+
+  async deleteProject(project: project, user: user): Promise<project> {
+    const response = await http.delete(`/project/${project._id}`, {
+      headers: {
+        Authorization: `${user.token}`,
+      },
+      withCredentials: true,
+    });
+    const deletedProject: project = response.data;
+    return deletedProject;
   }
 
   async updateCard(newCard: card, user: user) {
