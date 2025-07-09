@@ -34,10 +34,12 @@
       </div>
       <div class="content">
         <div class="navbar">
-          <div class="profile-name">{{ planningStore.myUser.name }}</div>
-          <div class="profile-pic">
+          <router-link to="/settings" class="profile-name">{{
+            planningStore.myUser.name
+          }}</router-link>
+          <router-link to="/settings" class="profile-pic">
             <img :src="planningStore.myUser.picture || '/profile.png'" alt="profile-pic" />
-          </div>
+          </router-link>
         </div>
         <router-view></router-view>
       </div>
@@ -125,7 +127,7 @@ label {
   display: flex;
   background-color: #ffffff;
   flex-direction: column;
-  width: 105px;
+  width: 120px;
   justify-content: space-between;
   margin: 0.25em;
 }
@@ -172,11 +174,23 @@ label {
   height: 5em;
   margin: 0.25em;
   border-radius: 1em;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+
+.profile-pic:hover {
+  transform: scale(1.05);
 }
 .profile-name {
   margin: 0.25em;
   color: #ffffff;
   font-size: 36px;
+  text-decoration: none;
+}
+
+.profile-name:hover {
+  color: #ea5151;
+  text-shadow: 1px 0px 10px rgba(0, 0, 0, 0.5);
 }
 
 .profile-pic img {
