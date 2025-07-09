@@ -10,29 +10,36 @@
       </ul>
     </div>
     <div class="datepicker">
-      <DatePicker :inline="true" v-model="currentDate" />
+      <!-- <DatePicker :inline="true" v-model="currentDate" /> -->
+      <input type="date" v-model="currentDate" class="date-input" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
-import DatePicker from "vue-datepicker-next";
-import "vue-datepicker-next/index.css";
 import { usePlanningStore } from "@/store/planning";
 import moment from "moment";
 
 const planningStore = usePlanningStore();
-const currentDate = ref(new Date());
+const currentDate = ref<string>("");
+
+// Initialize currentDate with today's date in yyyy-MM-dd format
+const today = new Date();
+const year = today.getFullYear();
+const month = String(today.getMonth() + 1).padStart(2, "0");
+const day = String(today.getDate()).padStart(2, "0");
+currentDate.value = `${year}-${month}-${day}`;
 
 const userCards = computed(() => {
-  if (planningStore.userCards.length > 0) {
+  if (planningStore.userCards.length > 0 && currentDate.value) {
+    const selectedDate = new Date(currentDate.value);
     return planningStore.userCards.filter((c) => {
       const storeDate = new Date(c.dueOn);
       return (
-        currentDate.value.getDay() === storeDate.getDay() &&
-        currentDate.value.getMonth() === storeDate.getMonth() &&
-        currentDate.value.getFullYear() === storeDate.getFullYear()
+        selectedDate.getDay() === storeDate.getDay() &&
+        selectedDate.getMonth() === storeDate.getMonth() &&
+        selectedDate.getFullYear() === storeDate.getFullYear()
       );
     });
   }
@@ -41,7 +48,8 @@ const userCards = computed(() => {
 
 const cardDate = computed(() => {
   if (currentDate.value) {
-    return moment(currentDate.value).format("MMM DD, YYYY");
+    const date = new Date(currentDate.value);
+    return moment(date).format("MMM DD, YYYY");
   }
   return "";
 });
@@ -95,5 +103,20 @@ onMounted(() => {
 
 .task-list ul li:hover {
   border-top: 5px solid #ea5151;
+}
+
+.date-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 </style>

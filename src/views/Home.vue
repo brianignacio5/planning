@@ -15,14 +15,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { usePlanningStore } from "@/store/planning";
 import ProjectCard from "@/components/ProjectCard.vue";
 
 const planningStore = usePlanningStore();
 const newProjectName = ref("");
 
-const projects = planningStore.projects;
+const projects = computed(() => planningStore.projects);
 
 function addNewProject() {
   if (newProjectName.value !== "") {
@@ -38,10 +38,6 @@ function addNewProject() {
     newProjectName.value = "";
   }
 }
-
-onMounted(() => {
-  planningStore.getProjects();
-});
 </script>
 
 <style scoped>

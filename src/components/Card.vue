@@ -67,8 +67,8 @@ function toggleCardEdit() {
   }
 }
 
-function saveCard() {
-  planningStore.updateCard(props.card);
+async function saveCard() {
+  await planningStore.updateCard(props.card);
   toggleCardEdit();
 }
 
@@ -79,7 +79,15 @@ function dragStart(e: DragEvent) {
 
 const cardDate = computed(() => {
   if (props.card.createdOn) {
-    return moment(props.card.createdOn.toString()).format("MMM DD, YYYY");
+    // Handle both Date objects and string dates properly
+    const date =
+      props.card.createdOn instanceof Date ? props.card.createdOn : new Date(props.card.createdOn);
+
+    if (isNaN(date.getTime())) {
+      return ""; // Return empty string if date is invalid
+    }
+
+    return moment(date).format("MMM DD, YYYY");
   }
   return "";
 });
@@ -89,12 +97,14 @@ function removeCard() {
 }
 
 function showDetail() {
-  planningStore.selectedCard = props.card;
+  planningStore.selectedCardId = props.card._id;
+  planningStore.selectedCardBoardId = props.card.board;
   planningStore.modalIsActive = true;
 }
 
 function showComments() {
-  planningStore.selectedCard = props.card;
+  planningStore.selectedCardId = props.card._id;
+  planningStore.selectedCardBoardId = props.card.board;
   planningStore.commentsModalIsActive = true;
 }
 </script>

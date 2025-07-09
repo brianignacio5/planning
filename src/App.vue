@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="main-app">
     <div class="columns">
       <div class="sidenav">
         <div class="title">
@@ -36,7 +36,7 @@
         <div class="navbar">
           <div class="profile-name">{{ planningStore.myUser.name }}</div>
           <div class="profile-pic">
-            <img :src="planningStore.myUser.picture || './profile.png'" alt="profile-pic" />
+            <img :src="planningStore.myUser.picture || '/profile.png'" alt="profile-pic" />
           </div>
         </div>
         <router-view></router-view>
@@ -68,6 +68,8 @@ onMounted(() => {
     console.log(error);
     localStorage.removeItem("planningUser");
   }
+
+  planningStore.getProjects();
 });
 </script>
 

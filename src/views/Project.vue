@@ -1,6 +1,6 @@
 <template>
   <div id="home">
-    <h1 class="project-title">{{ selectedProject.name }}</h1>
+    <h1 class="project-title">{{ selectedProject?.name ?? "" }}</h1>
     <div class="flexbox">
       <Board v-for="board in boards" :board="board" :key="board._id" />
       <div class="add-board">
@@ -20,20 +20,43 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
+import { useRoute } from "vue-router";
 import { usePlanningStore } from "@/store/planning";
 import Board from "@/components/Board.vue";
 import CardModal from "@/components/CardModal.vue";
 import CommentModal from "@/components/CommentModal.vue";
 
 const planningStore = usePlanningStore();
+const route = useRoute();
 const newBoardName = ref("");
 
-const boards = computed(() => planningStore.boards);
-const selectedProject = computed(() => planningStore.selectedProject);
+const selectedProject = computed(() =>
+  planningStore.projects.find((p) => p._id === planningStore.selectedProjectId),
+);
+const boards = computed(() => selectedProject.value?.boards ?? []);
+
+function setProjectFromRoute() {
+  const id = route.params.id;
+  if (id && typeof id === "string") {
+    planningStore.selectedProjectId = id;
+    planningStore.setCurrentProject();
+  }
+}
+
+onMounted(() => {
+  setProjectFromRoute();
+});
+
+watch(
+  () => route.params.id,
+  () => {
+    setProjectFromRoute();
+  },
+);
 
 function addNewBoard() {
-  if (newBoardName.value !== "") {
+  if (newBoardName.value !== "" && selectedProject.value) {
     planningStore.createBoard({
       name: newBoardName.value,
       project: selectedProject.value._id,

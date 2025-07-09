@@ -1,7 +1,7 @@
 <template>
   <div class="comment">
     <div class="profile-pic">
-      <img :src="comment.createdBy.picture || './profile.png'" alt="profile-pic" />
+      <img :src="comment.createdBy.picture || '/profile.png'" alt="profile-pic" />
     </div>
     <div class="comment-content">
       <div class="comment-content-title">

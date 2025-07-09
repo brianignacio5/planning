@@ -37,10 +37,10 @@ const cardDate = computed(() => {
 function selectProject(e?: Event) {
   // Prevent parent click from toggling edit
   if (e) e.stopPropagation();
-  // Set the selected project in the store
-  planningStore.selectedProject = props.project;
+  // Set the selected project id in the store
+  planningStore.selectedProjectId = props.project._id;
   planningStore.setCurrentProject();
-  router.push({ path: "/project" });
+  router.push({ name: "project", params: { id: props.project._id } });
 }
 
 function toggleCardEdit() {

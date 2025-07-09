@@ -2,32 +2,35 @@
   <div class="card-modal" :class="{ active: isActive }">
     <div class="modal-content">
       <span class="close-button" @click="toggleModal">&times;</span>
-      <h2>{{ card.title }}</h2>
+      <h2 v-if="card">{{ card.title }}</h2>
+      <div v-else><em>No card selected</em></div>
 
-      <Comment
-        v-for="comment in card.comments"
-        :comment="comment"
-        :card="card"
-        :key="comment._id"
-      />
+      <template v-if="card">
+        <Comment
+          v-for="comment in card.comments"
+          :comment="comment"
+          :card="card"
+          :key="comment._id"
+        />
 
-      <div class="add-comment-input" v-if="isNewCommentInputVisible">
-        <textarea
-          cols="30"
-          rows="3"
-          ref="contextCommentArea"
-          v-model="newCommentContent"
-          @keyup.enter="addCommentToCard"
-          placeholder="Comment title"
-        ></textarea>
-        <div class="add-sections-btns">
-          <faIcon icon="plus" @click="addCommentToCard" class="icon" />
-          <faIcon icon="times" @click="toggleNewCommentInput" class="icon" />
+        <div class="add-comment-input" v-if="isNewCommentInputVisible">
+          <textarea
+            cols="30"
+            rows="3"
+            ref="contextCommentArea"
+            v-model="newCommentContent"
+            @keyup.enter="addCommentToCard"
+            placeholder="Comment title"
+          ></textarea>
+          <div class="add-sections-btns">
+            <faIcon icon="plus" @click="addCommentToCard" class="icon" />
+            <faIcon icon="times" @click="toggleNewCommentInput" class="icon" />
+          </div>
         </div>
-      </div>
-      <div v-else class="add-new-comment" @click="toggleNewCommentInput">
-        <faIcon icon="plus" class="icon" />Add new comment
-      </div>
+        <div v-else class="add-new-comment" @click="toggleNewCommentInput">
+          <faIcon icon="plus" class="icon" />Add new comment
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -58,7 +61,8 @@ function toggleModal() {
 }
 
 function addCommentToCard() {
-  if (newCommentContent.value !== "") {
+  if (!card.value) return;
+  if (newCommentContent.value.trim() !== "") {
     // Generate _id based on last comment index
     const comments = card.value.comments || [];
     let newId = "0";
@@ -79,6 +83,8 @@ function addCommentToCard() {
     };
     planningStore.createComment(newComment);
     newCommentContent.value = "";
+    // Optionally close input after adding
+    isNewCommentInputVisible.value = false;
   }
 }
 

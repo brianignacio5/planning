@@ -68,6 +68,8 @@
         @keyup="clearErrors"
       />
       <button @click="saveChanges">Save changes</button>
+      <button @click="exportLocalStorage" class="export-storage-btn">Export Local Storage</button>
+      <button @click="clearLocalStorage" class="clear-storage-btn">Clear Local Storage</button>
     </form>
   </div>
 </template>
@@ -145,6 +147,81 @@ function saveChanges(e: Event) {
   }
 }
 
+function exportLocalStorage() {
+  // Collect all localStorage items created by localDataService
+  const exportData = {
+    projects: localStorage.getItem("projects"),
+    currentProjectId: localStorage.getItem("currentProjectId"),
+    planningUser: localStorage.getItem("planningUser"),
+    exportDate: new Date().toISOString(),
+    exportVersion: "1.0",
+  };
+
+  // Create a JSON blob
+  const jsonString = JSON.stringify(exportData, null, 2);
+  const blob = new Blob([jsonString], { type: "application/json" });
+
+  // Create download link
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `planning-app-backup-${new Date().toISOString().split("T")[0]}.json`;
+
+  // Trigger download
+  document.body.appendChild(link);
+  link.click();
+
+  // Cleanup
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+
+  alert("Local storage data has been exported successfully!");
+}
+
+function clearLocalStorage() {
+  if (
+    confirm(
+      "Are you sure you want to clear all local storage? This will remove all projects, cards, and user data. This action cannot be undone.",
+    )
+  ) {
+    // Clear all localStorage items created by localDataService
+    localStorage.removeItem("projects");
+    localStorage.removeItem("currentProjectId");
+    localStorage.removeItem("planningUser");
+
+    // Reset the store state
+    planningStore.projects = [];
+    planningStore.selectedProjectId = null;
+    planningStore.selectedCardId = null;
+    planningStore.selectedCardBoardId = null;
+    planningStore.userCards = [];
+    planningStore.modalIsActive = false;
+    planningStore.commentsModalIsActive = false;
+
+    // Reset user to default
+    planningStore.myUser = {
+      token: "madsStrings",
+      name: "Mads Nielsen",
+      email: "me@mail.com",
+      picture: "/profile.png",
+    };
+
+    // Reset form
+    userInfo.value = {
+      email: planningStore.myUser.email,
+      name: planningStore.myUser.name,
+      password: undefined,
+      picture: planningStore.myUser.picture,
+      oldPassword: undefined,
+      newPassword: undefined,
+      newNewPassword: undefined,
+    };
+
+    alert("Local storage has been cleared. The page will refresh to apply changes.");
+    window.location.reload();
+  }
+}
+
 onMounted(() => {
   userInfo.value = {
     email: planningStore.myUser.email,
@@ -189,6 +266,32 @@ onMounted(() => {
 #settings form button:hover {
   color: #ea5151;
   border: 0.25em solid #ea5151;
+}
+
+.export-storage-btn {
+  background-color: #28a745;
+  color: white;
+  border: 2px solid #28a745;
+  margin-top: 1rem;
+}
+
+.export-storage-btn:hover {
+  background-color: #218838;
+  border-color: #218838;
+  color: white;
+}
+
+.clear-storage-btn {
+  background-color: #ea5151;
+  color: white;
+  border: 2px solid #ea5151;
+  margin-top: 1rem;
+}
+
+.clear-storage-btn:hover {
+  background-color: #d43d3d;
+  border-color: #d43d3d;
+  color: white;
 }
 
 .alert {

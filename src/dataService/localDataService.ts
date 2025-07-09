@@ -22,16 +22,20 @@ class LocalDataService implements AbstractDataService {
   }
 
   getCurrentProject() {
-    const currentProject = localStorage.getItem("currentProject");
-    if (currentProject) {
-      try {
-        const curProject: project = JSON.parse(currentProject);
-        return curProject;
-      } catch (error) {
-        console.log(error);
-        localStorage.removeItem("currentProject");
+    const currentProjectId = localStorage.getItem("currentProjectId");
+    if (currentProjectId) {
+      const localProjectsRaw = localStorage.getItem("projects");
+      if (localProjectsRaw) {
+        try {
+          const projects: project[] = JSON.parse(localProjectsRaw);
+          return projects.find((p) => p._id === currentProjectId) || null;
+        } catch (error) {
+          console.log(error);
+          localStorage.removeItem("projects");
+        }
       }
     }
+    return null;
   }
 
   async getAllCardsOfUser(user: user): Promise<card[]> {
@@ -344,7 +348,13 @@ class LocalDataService implements AbstractDataService {
       email: userInfo.email || user.email,
       name: userInfo.name || user.name,
       picture: userInfo.picture || user.picture,
+      token: user.token, // Preserve the token
     };
+
+    // Save the updated user to localStorage
+    const parsedUser = JSON.stringify(updatedUser);
+    localStorage.setItem("planningUser", parsedUser);
+
     return updatedUser as user;
   }
 }
