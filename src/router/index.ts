@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 import Calendar from "@/views/Calendar.vue";
 import Projects from "@/views/Home.vue";
 import ProjectPage from "@/views/Project.vue";
@@ -6,7 +6,7 @@ import Settings from "@/views/Settings.vue";
 import Teams from "@/views/Teams.vue";
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(),
   routes: [
     { name: "calendar", path: "/calendar", component: Calendar },
     { name: "home", path: "/", component: Projects },
