@@ -10,13 +10,14 @@ import {
   faCalendarDay,
   faCog,
   faEdit,
+  faFlag,
   faPlus,
   faTimes,
   faThLarge,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 
-library.add(faCalendarDay, faCog, faEdit, faPlus, faTimes, faThLarge, faUsers);
+library.add(faCalendarDay, faCog, faEdit, faFlag, faPlus, faTimes, faThLarge, faUsers);
 
 const app = createApp(App);
 

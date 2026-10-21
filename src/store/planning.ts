@@ -10,6 +10,9 @@ export interface PlanState {
   selectedCardId: string | null;
   selectedCardBoardId: string | null;
   selectedProjectId: string | null;
+  pomodoroCardId: string | null;
+  pomodoroCardBoardId: string | null;
+  pomodoroLocked: boolean;
   settingsError: string[];
   userCards: card[];
 }
@@ -28,6 +31,9 @@ export const usePlanningStore = defineStore("planning", {
     selectedCardId: null,
     selectedCardBoardId: null,
     selectedProjectId: null,
+    pomodoroCardId: null,
+    pomodoroCardBoardId: null,
+    pomodoroLocked: false,
     settingsError: [],
     userCards: [],
   }),
@@ -256,6 +262,13 @@ export const usePlanningStore = defineStore("planning", {
       const board = project.boards.find((b) => b._id === state.selectedCardBoardId);
       if (!board) return undefined;
       return board.cards.find((c) => c._id === state.selectedCardId);
+    },
+    pomodoroCard(state): card | undefined {
+      const project = state.projects.find((p) => p._id === state.selectedProjectId);
+      if (!project) return undefined;
+      const board = project.boards.find((b) => b._id === state.pomodoroCardBoardId);
+      if (!board) return undefined;
+      return board.cards.find((c) => c._id === state.pomodoroCardId);
     },
   },
 });
