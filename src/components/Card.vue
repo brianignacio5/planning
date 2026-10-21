@@ -27,6 +27,14 @@
           @blur="saveCard"
         />
       </div>
+      <div
+        class="flag-card"
+        :class="{ active: isPomodoroCard }"
+        v-if="isCardHovered || isPomodoroCard"
+        @click.stop="flagForPomodoro"
+      >
+        <faIcon icon="flag" class="icon" />
+      </div>
       <div class="edit-card" v-if="isCardHovered" @click="showDetail">
         <faIcon icon="edit" class="icon" />
       </div>
@@ -50,6 +58,12 @@ const isCardHovered = ref(false);
 const cardEdit = ref(false);
 
 const cardDescription = `${props.card._id}-desc`;
+
+const isPomodoroCard = computed(
+  () =>
+    planningStore.pomodoroCardId === props.card._id &&
+    planningStore.pomodoroCardBoardId === props.card.board,
+);
 
 function toggleCardHover() {
   isCardHovered.value = !isCardHovered.value;
@@ -94,6 +108,12 @@ const cardDate = computed(() => {
 
 function removeCard() {
   planningStore.deleteCard(props.card);
+}
+
+function flagForPomodoro() {
+  if (planningStore.pomodoroLocked) return;
+  planningStore.pomodoroCardId = props.card._id;
+  planningStore.pomodoroCardBoardId = props.card.board;
 }
 
 function showDetail() {
@@ -168,12 +188,22 @@ function showComments() {
 }
 
 .delete-card,
-.edit-card {
+.edit-card,
+.flag-card {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 2em;
   transition: all 0.3s ease;
+}
+
+.flag-card:hover,
+.flag-card.active {
+  background-color: #28a745;
+}
+
+.flag-card:hover {
+  width: 5em;
 }
 
 .delete-card:hover {

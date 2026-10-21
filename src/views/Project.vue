@@ -1,6 +1,7 @@
 <template>
   <div id="home">
     <h1 class="project-title">{{ selectedProject?.name ?? "" }}</h1>
+    <PomodoroTimer />
     <div class="flexbox">
       <Board v-for="board in boards" :board="board" :key="board._id" />
       <div class="add-board">
@@ -26,6 +27,7 @@ import { usePlanningStore } from "@/store/planning";
 import Board from "@/components/Board.vue";
 import CardModal from "@/components/CardModal.vue";
 import CommentModal from "@/components/CommentModal.vue";
+import PomodoroTimer from "@/components/PomodoroTimer.vue";
 
 const planningStore = usePlanningStore();
 const route = useRoute();
