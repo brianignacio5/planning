@@ -54,6 +54,8 @@ const restMinutes = ref(5);
 const remainingSeconds = ref(25 * 60);
 
 let intervalId: ReturnType<typeof setInterval> | null = null;
+let endsAt: number | null = null;
+let finishing = false;
 
 const inputsLocked = computed(() => mode.value !== "stopped");
 const primaryDisabled = computed(() => mode.value === "stopped" && !planningStore.pomodoroCard);
@@ -95,12 +97,16 @@ function syncLock() {
 function startTicking() {
   clearTick();
   paused.value = false;
+  endsAt = Date.now() + remainingSeconds.value * 1000;
   intervalId = setInterval(tick, 1000);
+  tick();
 }
 
 function tick() {
-  if (remainingSeconds.value > 1) {
-    remainingSeconds.value -= 1;
+  if (mode.value === "stopped" || paused.value || endsAt === null || finishing) return;
+  const remainingMs = endsAt - Date.now();
+  if (remainingMs > 0) {
+    remainingSeconds.value = Math.ceil(remainingMs / 1000);
     return;
   }
   remainingSeconds.value = 0;
@@ -112,30 +118,59 @@ function tick() {
 }
 
 async function finishWork() {
-  const card = planningStore.pomodoroCard;
-  const finishedAt = moment().format("MMM DD, YYYY h:mm A");
-  mode.value = "rest";
-  remainingSeconds.value = clampMinutes(restMinutes.value) * 60;
-  syncLock();
-  if (!card) return;
-  await planningStore.createComment({
-    newComment: {
-      card: card._id,
-      content: `You have worked 1 pomodoro at ${finishedAt}`,
-      createdOn: new Date(),
-      _id: "0",
-      createdBy: planningStore.myUser,
-    },
-    board: card.board,
-  });
+  if (finishing || mode.value !== "work") return;
+  finishing = true;
+  try {
+    const workEndedAt = endsAt ?? Date.now();
+    const card = planningStore.pomodoroCard;
+    const finishedAt = moment(workEndedAt).format("MMM DD, YYYY h:mm A");
+    const restMs = clampMinutes(restMinutes.value) * 60 * 1000;
+    const restEndsAt = workEndedAt + restMs;
+    mode.value = "rest";
+    endsAt = restEndsAt;
+    syncLock();
+    if (Date.now() >= restEndsAt) {
+      finishRest();
+    } else {
+      remainingSeconds.value = Math.ceil((restEndsAt - Date.now()) / 1000);
+    }
+    finishing = false;
+    if (!card) return;
+    await planningStore.createComment({
+      newComment: {
+        card: card._id,
+        content: `You have worked 1 pomodoro at ${finishedAt}`,
+        createdOn: new Date(workEndedAt),
+        _id: "0",
+        createdBy: planningStore.myUser,
+      },
+      board: card.board,
+    });
+  } finally {
+    finishing = false;
+  }
 }
 
 function finishRest() {
   clearTick();
+  endsAt = null;
   mode.value = "stopped";
   paused.value = false;
   remainingSeconds.value = clampMinutes(workMinutes.value) * 60;
   syncLock();
+}
+
+function pause() {
+  if (endsAt !== null && endsAt - Date.now() <= 0) {
+    tick();
+    return;
+  }
+  if (endsAt !== null) {
+    remainingSeconds.value = Math.max(0, Math.ceil((endsAt - Date.now()) / 1000));
+  }
+  clearTick();
+  endsAt = null;
+  paused.value = true;
 }
 
 function toggleRunning() {
@@ -152,17 +187,30 @@ function toggleRunning() {
     startTicking();
     return;
   }
-  clearTick();
-  paused.value = true;
+  pause();
 }
 
 function reset() {
   clearTick();
+  endsAt = null;
+  finishing = false;
   mode.value = "stopped";
   paused.value = false;
   remainingSeconds.value = clampMinutes(workMinutes.value) * 60;
   syncLock();
 }
+
+function catchUp() {
+  if (mode.value === "stopped" || paused.value || endsAt === null) return;
+  tick();
+}
+
+function onVisibilityChange() {
+  if (document.visibilityState === "visible") catchUp();
+}
+
+document.addEventListener("visibilitychange", onVisibilityChange);
+window.addEventListener("focus", catchUp);
 
 function onWorkMinutesChange() {
   workMinutes.value = clampMinutes(workMinutes.value);
@@ -187,6 +235,8 @@ watch(
 
 onUnmounted(() => {
   clearTick();
+  document.removeEventListener("visibilitychange", onVisibilityChange);
+  window.removeEventListener("focus", catchUp);
   planningStore.pomodoroLocked = false;
 });
 </script>
