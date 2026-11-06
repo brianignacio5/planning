@@ -9,7 +9,9 @@
         :style="{ visibility: isBoardHovered ? 'visible' : 'hidden' }"
       />
     </div>
-    <Card v-for="card in board.cards" :card="card" :key="card._id" />
+    <div ref="cardsEl" class="board-cards" :style="cardsListStyle">
+      <Card v-for="card in board.cards" :card="card" :key="card._id" />
+    </div>
     <div class="add-section">
       <div class="add-card-input" v-if="isNewCardInputVisible">
         <textarea
@@ -34,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, onMounted } from "vue";
+import { ref, computed, nextTick, onMounted, watch } from "vue";
 import { usePlanningStore } from "@/store/planning";
 import Card from "./Card.vue";
 import type { board, card } from "@/types";
@@ -47,6 +49,35 @@ const isNewCardInputVisible = ref(false);
 const isBoardHovered = ref(false);
 const newCardTitle = ref("");
 const contentTextArea = ref<HTMLTextAreaElement | null>(null);
+const cardsEl = ref<HTMLElement | null>(null);
+const cardsMaxHeight = ref<string | undefined>(undefined);
+
+const cardsListStyle = computed(() => {
+  if (props.board.cards.length <= 5 || !cardsMaxHeight.value) {
+    return undefined;
+  }
+  return {
+    maxHeight: cardsMaxHeight.value,
+    overflowY: "auto" as const,
+    overflowX: "hidden" as const,
+    width: "100%",
+  };
+});
+
+function updateCardsMaxHeight() {
+  const el = cardsEl.value;
+  if (!el || props.board.cards.length <= 5) {
+    cardsMaxHeight.value = undefined;
+    return;
+  }
+  const children = Array.from(el.children).slice(0, 5) as HTMLElement[];
+  const height = children.reduce((sum, child) => {
+    const style = getComputedStyle(child);
+    const margin = parseFloat(style.marginTop) + parseFloat(style.marginBottom);
+    return sum + child.offsetHeight + margin;
+  }, 0);
+  cardsMaxHeight.value = `${height}px`;
+}
 
 function toggleNewCardInput() {
   isNewCardInputVisible.value = !isNewCardInputVisible.value;
@@ -102,11 +133,11 @@ function drop(e: DragEvent) {
   const cardDragged = e.dataTransfer?.getData("dragged_card");
   if (!cardId || !cardDragged) return;
   const cardObj = JSON.parse(cardDragged) as card;
-  const dropYPosition = e.pageY;
+  const dropYPosition = e.clientY;
   let isBoardUpdated = false;
   for (let i = 0; i < props.board.cards.length; i++) {
     const cardYPosition = document.getElementById(props.board.cards[i]._id);
-    if (cardYPosition && cardYPosition.getBoundingClientRect().y > dropYPosition) {
+    if (cardYPosition && cardYPosition.getBoundingClientRect().top > dropYPosition) {
       planningStore.updateCardByBoard(cardObj, {
         card: cardObj,
         newBoard: props.board,
@@ -124,6 +155,14 @@ function drop(e: DragEvent) {
     });
   }
 }
+
+watch(
+  () => props.board.cards,
+  () => {
+    nextTick(updateCardsMaxHeight);
+  },
+  { deep: true, immediate: true },
+);
 
 onMounted(() => {
   window.addEventListener("keyup", (e) => {
@@ -165,6 +204,12 @@ onMounted(() => {
 }
 .board-title .icon {
   margin: 5%;
+}
+.board-cards {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 .add-section {
   margin: 1em;
