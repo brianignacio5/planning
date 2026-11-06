@@ -59,22 +59,25 @@ label {
 .add-new-user {
   display: flex;
   justify-content: center;
-  background-color: #bebebe;
-  box-shadow: 3px 3px 8px #0000004b;
-  border: 0.25em solid #efefef;
+  background-color: var(--color-surface-muted);
+  box-shadow: 3px 3px 8px var(--color-shadow-strong);
+  border: 0.25em solid var(--color-border);
   border-radius: 5px;
   padding: 0.5em;
 }
 
 .add-new-user:hover {
-  border: 0.25em solid #ea5151;
-  color: #ea5151;
+  border: 0.25em solid var(--color-accent);
+  color: var(--color-accent);
 }
 
 .project-card select {
   padding: 0.5rem;
   border: 0;
-  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 10px 1px var(--color-shadow-strong);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
   margin: 1rem;
   width: 60%;
   align-self: center;

@@ -103,7 +103,7 @@ onMounted(() => {
   transition: all 0.3s ease;
 }
 .add-new-comment:hover {
-  background-color: #fff;
+  background-color: var(--color-surface);
 }
 .add-sections-btns {
   display: flex;

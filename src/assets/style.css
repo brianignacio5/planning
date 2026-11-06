@@ -1,0 +1,83 @@
+:root {
+  color-scheme: light;
+  --color-bg: #f6f3ef;
+  --color-surface: #ffffff;
+  --color-surface-muted: #e6e1da;
+  --color-text: #1c1917;
+  --color-text-muted: #57534e;
+  --color-text-inverse: #ffffff;
+  --color-accent: #e05a4f;
+  --color-accent-hover: #c2413a;
+  --color-accent-soft: #fce4e4;
+  --color-border: #d6d3d1;
+  --color-navbar-start: #292524;
+  --color-navbar-end: #44403c;
+  --color-navbar-text: #fafaf9;
+  --color-success: #15803d;
+  --color-success-hover: #166534;
+  --color-danger: #dc2626;
+  --color-danger-hover: #b91c1c;
+  --color-danger-soft: #fce4e4;
+  --color-focus: #2563eb;
+  --color-flag: #f2db8f;
+  --color-on-accent: #ffffff;
+  --color-on-success: #ffffff;
+  --color-on-danger: #ffffff;
+  --color-on-flag: #1c1917;
+  --color-shadow: rgba(28, 25, 23, 0.16);
+  --color-shadow-strong: rgba(28, 25, 23, 0.35);
+  --color-overlay: rgba(28, 25, 23, 0.5);
+  --shadow-focus: 0 0 0 2px rgba(37, 99, 235, 0.25);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: #1c1917;
+  --color-surface: #292524;
+  --color-surface-muted: #3f3a36;
+  --color-text: #fafaf9;
+  --color-text-muted: #a8a29e;
+  --color-text-inverse: #1c1917;
+  --color-accent: #f07167;
+  --color-accent-hover: #fb9189;
+  --color-accent-soft: rgba(240, 113, 103, 0.18);
+  --color-border: #57534e;
+  --color-navbar-start: #0c0a09;
+  --color-navbar-end: #1c1917;
+  --color-navbar-text: #fafaf9;
+  --color-success: #4ade80;
+  --color-success-hover: #86efac;
+  --color-danger: #f87171;
+  --color-danger-hover: #fca5a5;
+  --color-danger-soft: rgba(248, 113, 113, 0.18);
+  --color-focus: #60a5fa;
+  --color-flag: #e8c56b;
+  --color-on-accent: #1c1917;
+  --color-on-success: #1c1917;
+  --color-on-danger: #1c1917;
+  --color-on-flag: #1c1917;
+  --color-shadow: rgba(0, 0, 0, 0.4);
+  --color-shadow-strong: rgba(0, 0, 0, 0.55);
+  --color-overlay: rgba(0, 0, 0, 0.65);
+  --shadow-focus: 0 0 0 2px rgba(96, 165, 250, 0.35);
+}
+
+html,
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+button,
+input,
+textarea,
+select {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+button {
+  cursor: pointer;
+}

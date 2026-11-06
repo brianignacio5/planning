@@ -2,6 +2,38 @@ import { defineStore } from "pinia";
 import type { board, card, comment, project, user, userInfo } from "../types";
 import { type CardByBoard, dataService } from "../dataService";
 
+export type Theme = "light" | "dark";
+
+export const DEFAULT_PROFILE_PICTURE = `${import.meta.env.BASE_URL}profile.png`;
+
+export function resolveProfilePicture(picture?: string | null): string {
+  if (!picture || picture === "/profile.png") {
+    return DEFAULT_PROFILE_PICTURE;
+  }
+  return picture;
+}
+
+const THEME_KEY = "planningTheme";
+
+function readStoredTheme(): Theme {
+  try {
+    const stored = localStorage.getItem(THEME_KEY);
+    if (stored === "light" || stored === "dark") {
+      return stored;
+    }
+  } catch {
+    // localStorage can be unavailable; fall back to light.
+  }
+  return "light";
+}
+
+function applyTheme(theme: Theme) {
+  document.documentElement.dataset.theme = theme;
+}
+
+const initialTheme = readStoredTheme();
+applyTheme(initialTheme);
+
 export interface PlanState {
   commentsModalIsActive: boolean;
   modalIsActive: boolean;
@@ -15,6 +47,7 @@ export interface PlanState {
   pomodoroLocked: boolean;
   settingsError: string[];
   userCards: card[];
+  theme: Theme;
 }
 
 export const usePlanningStore = defineStore("planning", {
@@ -25,7 +58,7 @@ export const usePlanningStore = defineStore("planning", {
       token: "madsStrings",
       name: "Mads Nielsen",
       email: "me@mail.com",
-      picture: "/profile.png",
+      picture: DEFAULT_PROFILE_PICTURE,
     },
     projects: [],
     selectedCardId: null,
@@ -36,6 +69,7 @@ export const usePlanningStore = defineStore("planning", {
     pomodoroLocked: false,
     settingsError: [],
     userCards: [],
+    theme: initialTheme,
   }),
   actions: {
     async getProjects() {
@@ -249,6 +283,11 @@ export const usePlanningStore = defineStore("planning", {
     saveUserLocally(user: user) {
       const parsedUser = JSON.stringify(user);
       localStorage.setItem("planningUser", parsedUser);
+    },
+    setTheme(theme: Theme) {
+      this.theme = theme;
+      localStorage.setItem(THEME_KEY, theme);
+      applyTheme(theme);
     },
   },
   // Optionally, add getters here

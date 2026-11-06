@@ -1,7 +1,7 @@
 <template>
   <div class="comment">
     <div class="profile-pic">
-      <img :src="comment.createdBy.picture || '/profile.png'" alt="profile-pic" />
+      <img :src="resolveProfilePicture(comment.createdBy.picture)" alt="profile-pic" />
     </div>
     <div class="comment-content">
       <div class="comment-content-title">
@@ -20,7 +20,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { usePlanningStore } from "@/store/planning";
+import { resolveProfilePicture, usePlanningStore } from "@/store/planning";
 import type { card, comment } from "@/types";
 import moment from "moment";
 
@@ -47,7 +47,8 @@ function deleteThisComment() {
 <style scoped>
 .comment {
   display: flex;
-  background-color: #fff;
+  background-color: var(--color-surface);
+  color: var(--color-text);
   margin: 0.25em;
   align-items: center;
   width: -webkit-fill-available;
@@ -92,6 +93,6 @@ function deleteThisComment() {
 }
 
 .delete-comment:hover .icon {
-  color: #ea5151;
+  color: var(--color-accent);
 }
 </style>

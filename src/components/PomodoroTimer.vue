@@ -250,23 +250,24 @@ onUnmounted(() => {
   width: 280px;
   padding: 1rem;
   border-radius: 15px;
-  box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.25);
+  box-shadow: 3px 3px 12px var(--color-shadow-strong);
   text-align: left;
 }
 
 .pomodoro.stopped {
-  background-color: #eeeeee;
-  color: #000000;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
 }
 
 .pomodoro.work {
-  background-color: #ea5151;
-  color: #ffffff;
+  background-color: var(--color-accent);
+  color: var(--color-on-accent);
 }
 
 .pomodoro.rest {
-  background-color: #28a745;
-  color: #ffffff;
+  background-color: var(--color-success);
+  color: var(--color-on-success);
 }
 
 .time-row {
@@ -312,8 +313,8 @@ onUnmounted(() => {
   width: 100%;
   margin: 0.35rem 0 0;
   box-sizing: border-box;
-  color: #000000;
-  background-color: #ffffff;
+  color: var(--color-text);
+  background-color: var(--color-surface);
 }
 
 .controls {
@@ -327,8 +328,8 @@ onUnmounted(() => {
   border: 0;
   border-radius: 5px;
   padding: 0.5em;
-  background-color: #ffffff;
-  color: #000000;
+  background-color: var(--color-surface);
+  color: var(--color-text);
   cursor: pointer;
 }
 
@@ -338,6 +339,6 @@ onUnmounted(() => {
 }
 
 .controls button:not(:disabled):hover {
-  color: #ea5151;
+  color: var(--color-accent);
 }
 </style>

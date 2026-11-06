@@ -76,7 +76,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
-import { usePlanningStore } from "@/store/planning";
+import { DEFAULT_PROFILE_PICTURE, usePlanningStore } from "@/store/planning";
 import type { userInfo } from "@/types";
 
 const planningStore = usePlanningStore();
@@ -203,7 +203,7 @@ function clearLocalStorage() {
       token: "madsStrings",
       name: "Mads Nielsen",
       email: "me@mail.com",
-      picture: "/profile.png",
+      picture: DEFAULT_PROFILE_PICTURE,
     };
 
     // Reset form
@@ -246,14 +246,14 @@ onMounted(() => {
 #settings form input {
   padding: 0.5rem;
   border: 0;
-  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 10px 1px var(--color-shadow-strong);
   margin: 1rem;
   width: 60%;
 }
 
 #settings form input.error {
-  background-color: #fce4e4;
-  border: 1px solid #ea5151;
+  background-color: var(--color-danger-soft);
+  border: 1px solid var(--color-danger);
   outline: none;
 }
 
@@ -264,40 +264,40 @@ onMounted(() => {
 }
 
 #settings form button:hover {
-  color: #ea5151;
-  border: 0.25em solid #ea5151;
+  color: var(--color-accent);
+  border: 0.25em solid var(--color-accent);
 }
 
 .export-storage-btn {
-  background-color: #28a745;
-  color: white;
-  border: 2px solid #28a745;
+  background-color: var(--color-success);
+  color: var(--color-on-success);
+  border: 2px solid var(--color-success);
   margin-top: 1rem;
 }
 
 .export-storage-btn:hover {
-  background-color: #218838;
-  border-color: #218838;
-  color: white;
+  background-color: var(--color-success-hover);
+  border-color: var(--color-success-hover);
+  color: var(--color-on-success);
 }
 
 .clear-storage-btn {
-  background-color: #ea5151;
-  color: white;
-  border: 2px solid #ea5151;
+  background-color: var(--color-danger);
+  color: var(--color-on-danger);
+  border: 2px solid var(--color-danger);
   margin-top: 1rem;
 }
 
 .clear-storage-btn:hover {
-  background-color: #d43d3d;
-  border-color: #d43d3d;
-  color: white;
+  background-color: var(--color-danger-hover);
+  border-color: var(--color-danger-hover);
+  color: var(--color-on-danger);
 }
 
 .alert {
   padding: 20px;
-  background-color: #ea5151;
-  color: white;
+  background-color: var(--color-danger);
+  color: var(--color-on-danger);
   margin-bottom: 15px;
 }
 </style>

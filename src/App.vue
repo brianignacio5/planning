@@ -34,11 +34,30 @@
       </div>
       <div class="content">
         <div class="navbar">
+          <div class="theme-toggle" role="group" aria-label="Color theme">
+            <button
+              type="button"
+              :class="{ active: planningStore.theme === 'light' }"
+              @click="planningStore.setTheme('light')"
+            >
+              Light
+            </button>
+            <button
+              type="button"
+              :class="{ active: planningStore.theme === 'dark' }"
+              @click="planningStore.setTheme('dark')"
+            >
+              Dark
+            </button>
+          </div>
           <router-link to="/settings" class="profile-name">{{
             planningStore.myUser.name
           }}</router-link>
           <router-link to="/settings" class="profile-pic">
-            <img :src="planningStore.myUser.picture || '/profile.png'" alt="profile-pic" />
+            <img
+              :src="resolveProfilePicture(planningStore.myUser.picture)"
+              alt="profile-pic"
+            />
           </router-link>
         </div>
         <router-view></router-view>
@@ -48,10 +67,18 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from "vue";
-import { usePlanningStore } from "./store/planning";
+import { onMounted, watch } from "vue";
+import { resolveProfilePicture, usePlanningStore } from "./store/planning";
 
 const planningStore = usePlanningStore();
+
+watch(
+  () => planningStore.theme,
+  (theme) => {
+    document.documentElement.dataset.theme = theme;
+  },
+  { immediate: true },
+);
 
 onMounted(() => {
   try {
@@ -61,7 +88,7 @@ onMounted(() => {
       const newUser = {
         name: newUserData.name,
         email: newUserData.email,
-        picture: newUserData.picture,
+        picture: resolveProfilePicture(newUserData.picture),
         token: newUserData.token,
       };
       planningStore.updateUserInfo(newUser);
@@ -77,14 +104,14 @@ onMounted(() => {
 
 <style>
 body {
-  background-color: #eeeeee;
+  background-color: var(--color-bg);
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #000000;
+  color: var(--color-text);
   top: 0;
   left: 0;
   width: 100%;
@@ -95,9 +122,11 @@ body {
 input[type="text"],
 textarea {
   padding: 0.5rem;
-  border: 0;
-  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 0 10px 1px var(--color-shadow-strong);
   margin: 0.5rem;
+  background-color: var(--color-surface);
+  color: var(--color-text);
 }
 
 label {
@@ -109,8 +138,28 @@ label {
   align-items: center;
   margin: 0.25em;
   justify-content: flex-end;
-  background: transparent linear-gradient(90deg, #272626 0%, #4a4949 100%) 0% 0% no-repeat
-    padding-box;
+  background: linear-gradient(90deg, var(--color-navbar-start) 0%, var(--color-navbar-end) 100%);
+}
+
+.theme-toggle {
+  display: flex;
+  margin-right: 0.75em;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-navbar-text) 35%, transparent);
+}
+
+.theme-toggle button {
+  background: transparent;
+  color: var(--color-navbar-text);
+  border: 0;
+  padding: 0.4em 0.9em;
+  cursor: pointer;
+}
+
+.theme-toggle button.active {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
 }
 
 .columns {
@@ -125,7 +174,7 @@ label {
 
 .sidenav {
   display: flex;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   flex-direction: column;
   width: 120px;
   justify-content: space-between;
@@ -133,11 +182,11 @@ label {
 }
 
 .sidenav .title a {
-  color: #ea5151;
+  color: var(--color-accent);
 }
 
 .sidenav .title a:hover {
-  text-shadow: 1px 0px 10px rgba(0, 0, 0, 0.5);
+  text-shadow: 1px 0px 10px var(--color-shadow-strong);
 }
 
 .sidenav-section {
@@ -148,22 +197,22 @@ label {
 }
 
 .sidenav-section:hover {
-  border-left: 5px solid #ea5151;
+  border-left: 5px solid var(--color-accent);
 }
 
 .sidenav .title {
   font-weight: 500;
   font-family: "Kaushan Script", cursive;
-  color: #ea5151;
+  color: var(--color-accent);
 }
 
 .sidenav a {
   text-decoration: none;
-  color: #000;
+  color: var(--color-text);
 }
 
 .sidenav a:hover {
-  color: #ea5151;
+  color: var(--color-accent);
 }
 
 .profile-pic {
@@ -183,14 +232,14 @@ label {
 }
 .profile-name {
   margin: 0.25em;
-  color: #ffffff;
+  color: var(--color-navbar-text);
   font-size: 36px;
   text-decoration: none;
 }
 
 .profile-name:hover {
-  color: #ea5151;
-  text-shadow: 1px 0px 10px rgba(0, 0, 0, 0.5);
+  color: var(--color-accent);
+  text-shadow: 1px 0px 10px var(--color-shadow-strong);
 }
 
 .profile-pic img {

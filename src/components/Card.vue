@@ -131,9 +131,9 @@ function showComments() {
 
 <style scoped>
 .card {
-  background-color: #fff;
-  color: #000000;
-  box-shadow: 3px 3px 6px #2e2d2d29;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: 3px 3px 6px var(--color-shadow);
   border-radius: 15px;
   margin: 0.5em;
   display: flex;
@@ -171,7 +171,7 @@ function showComments() {
 }
 
 .small-card-title span:hover {
-  color: #ea5151;
+  color: var(--color-accent);
 }
 
 .small-card-title div {
@@ -199,7 +199,8 @@ function showComments() {
 
 .flag-card:hover,
 .flag-card.active {
-  background-color: #28a745;
+  background-color: var(--color-success);
+  color: var(--color-on-success);
 }
 
 .flag-card:hover {
@@ -208,12 +209,14 @@ function showComments() {
 
 .delete-card:hover {
   width: 5em;
-  background-color: #ea5151;
+  background-color: var(--color-danger);
+  color: var(--color-on-danger);
 }
 
 .edit-card:hover {
   width: 5em;
-  background-color: #f2db8f;
+  background-color: var(--color-flag);
+  color: var(--color-on-flag);
 }
 
 .picture {

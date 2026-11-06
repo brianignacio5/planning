@@ -175,8 +175,8 @@ onMounted(() => {
 
 <style scoped>
 .board {
-  background: #bebebe 0% 0% no-repeat padding-box;
-  color: #000000;
+  background: var(--color-surface-muted);
+  color: var(--color-text);
   width: 340px;
   height: fit-content;
   margin: 0.5em;
@@ -187,7 +187,7 @@ onMounted(() => {
   transition: all 0.1s ease;
 }
 .board:hover {
-  border-top: 10px solid #ea5151;
+  border-top: 10px solid var(--color-accent);
 }
 .board-title {
   display: flex;
@@ -197,8 +197,8 @@ onMounted(() => {
   margin: 0.5em;
 }
 .board-title h2 {
-  color: #ffffff;
-  text-shadow: 0px 3px 6px #00000070;
+  color: var(--color-text);
+  text-shadow: 0px 3px 6px var(--color-shadow);
   width: 300px;
   text-align: left;
 }
@@ -226,22 +226,22 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   width: 100%;
-  background-color: #efefef;
-  box-shadow: 3px 3px 8px #0000004b;
-  border: 0.25em solid #efefef;
+  background-color: var(--color-surface);
+  box-shadow: 3px 3px 8px var(--color-shadow-strong);
+  border: 0.25em solid var(--color-border);
   border-radius: 5px;
   padding: 0.5em;
 }
 
 .add-new-card:hover {
-  border: 0.25em solid #ea5151;
-  color: #ea5151;
+  border: 0.25em solid var(--color-accent);
+  color: var(--color-accent);
 }
 
 .icon {
   margin-right: 0.5em;
 }
 .icon:hover {
-  color: #ea5151;
+  color: var(--color-accent);
 }
 </style>

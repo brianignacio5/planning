@@ -217,7 +217,7 @@ onMounted(() => {
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--color-overlay);
   opacity: 0;
   visibility: hidden;
   transform: scale(1.1);
@@ -232,7 +232,8 @@ onMounted(() => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #bebebe;
+  background-color: var(--color-surface);
+  color: var(--color-text);
   padding: 5rem 10rem;
   width: 24rem;
   border-radius: 0.5em;
@@ -257,7 +258,8 @@ onMounted(() => {
   border-radius: 0.25rem;
 }
 .close-button:hover {
-  background-color: #ea5151;
+  background-color: var(--color-accent);
+  color: var(--color-on-accent);
 }
 
 .active {
@@ -271,14 +273,16 @@ onMounted(() => {
 }
 
 .delete-btn {
-  background-color: #ea5151;
+  background-color: var(--color-danger);
+  color: var(--color-on-danger);
   padding: 0.5rem;
   margin-top: 2em;
   border: 0;
   border-radius: 5px;
 }
 .delete-btn:hover {
-  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.5);
+  background-color: var(--color-danger-hover);
+  box-shadow: 0 0 10px 1px var(--color-shadow-strong);
 }
 
 /* Modal input styling */
@@ -286,7 +290,9 @@ onMounted(() => {
 .date-input {
   width: 100% !important;
   padding: 0.5rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text);
   border-radius: 4px;
   font-size: 1rem;
   margin-bottom: 1rem;
@@ -296,8 +302,8 @@ onMounted(() => {
 .modal-input:focus,
 .date-input:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  border-color: var(--color-focus);
+  box-shadow: var(--shadow-focus);
 }
 
 /* Ensure select elements have the same width as other inputs */

@@ -63,9 +63,9 @@ function saveCard() {
 
 <style>
 .project-card {
-  background-color: #fff;
-  color: #000000;
-  box-shadow: 3px 3px 6px #2e2d2d29;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: 3px 3px 6px var(--color-shadow);
   border-radius: 10px;
   margin: 0.5em;
   display: flex;
@@ -76,11 +76,11 @@ function saveCard() {
 }
 
 .project-card:hover {
-  border-top: 5px solid #ea5151;
+  border-top: 5px solid var(--color-accent);
 }
 
 .project-name {
-  color: #ea5151;
+  color: var(--color-accent);
   font-size: x-large;
   font-weight: 500;
   font-family: Avenir, Helvetica, Arial, sans-serif;

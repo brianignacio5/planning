@@ -75,7 +75,7 @@ onMounted(() => {
 
 .task-list h2 {
   margin: 0.5em;
-  color: #ea5151;
+  color: var(--color-accent);
   font-size: xx-large;
   font-weight: 500;
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -89,26 +89,28 @@ onMounted(() => {
 .task-list ul li {
   list-style-type: none;
   margin: 0.5em;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   transition: all 0.1s ease;
-  color: #000000;
-  box-shadow: 3px 3px 6px #2e2d2d29;
+  color: var(--color-text);
+  box-shadow: 3px 3px 6px var(--color-shadow);
   border-radius: 10px;
 }
 
 .task-list ul li h3 {
-  color: #ea5151;
+  color: var(--color-accent);
   font-size: x-large;
 }
 
 .task-list ul li:hover {
-  border-top: 5px solid #ea5151;
+  border-top: 5px solid var(--color-accent);
 }
 
 .date-input {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text);
   border-radius: 4px;
   font-size: 1rem;
   margin-bottom: 1rem;
@@ -116,7 +118,7 @@ onMounted(() => {
 
 .date-input:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  border-color: var(--color-focus);
+  box-shadow: var(--shadow-focus);
 }
 </style>

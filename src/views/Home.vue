@@ -52,6 +52,6 @@ function addNewProject() {
   align-self: start;
 }
 .icon:hover {
-  color: #ea5151;
+  color: var(--color-accent);
 }
 </style>

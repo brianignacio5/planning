@@ -70,7 +70,7 @@ function addNewBoard() {
 
 <style scoped>
 .project-title {
-  color: #ea5151;
+  color: var(--color-accent);
   font-size: xx-large;
   font-weight: 800;
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -87,6 +87,6 @@ function addNewBoard() {
   align-self: start;
 }
 .icon:hover {
-  color: #ea5151;
+  color: var(--color-accent);
 }
 </style>
